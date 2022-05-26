@@ -2,7 +2,9 @@
   Autor: Dalton Solano dos Reis
 **/
 
+#define CG_Gizmo
 #define CG_Debug
+#define CG_OpenGL
 
 using OpenTK.Graphics.OpenGL;
 namespace CG_Biblioteca
@@ -57,8 +59,10 @@ namespace CG_Biblioteca
       centro.Z = (maiorZ + menorZ) / 2;
     }
 
+#if CG_Gizmo      
     public void Desenhar()
     {
+#if CG_OpenGL
       GL.Color3(1.0f, 1.0f, 0.0f);
 
       GL.PointSize(5);
@@ -91,7 +95,9 @@ namespace CG_Biblioteca
       GL.Vertex3(maiorX, maiorY, maiorZ);
       GL.Vertex3(maiorX, menorY, maiorZ);
       GL.End();
+#endif
     }
+#endif
 
     /// Obter menor valor X da BBox.
     public double obterMenorX => menorX;
@@ -114,7 +120,7 @@ namespace CG_Biblioteca
     /// Obter ponto do centro da BBox.
     public Ponto4D obterCentro => centro;
 
-    //TODO: melhorar para exibir não só a lsita de pontos (geometria), mas também a topologia ... poderia ser listado estilo OBJ da Wavefrom
+    //TODO: melhorar para exibir não só a lista de pontos (geometria), mas também a topologia ... poderia ser listado estilo OBJ da Wavefrom
 #if CG_Debug
     public override string ToString()
     {

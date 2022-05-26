@@ -50,7 +50,7 @@ namespace CG_Biblioteca
       xMin -= 2; xMax += 2; yMin -= 2; yMax += 2;
     }
 
-    //TODO: melhorar para exibir não só a lsita de pontos (geometria), mas também a topologia ... poderia ser listado estilo OBJ da Wavefrom
+    //TODO: melhorar para exibir não só a lista de pontos (geometria), mas também a topologia ... poderia ser listado estilo OBJ da Wavefrom
 #if CG_Debug
     public override string ToString()
     {
