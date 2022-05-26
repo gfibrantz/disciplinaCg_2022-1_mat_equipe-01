@@ -25,12 +25,25 @@ namespace gcgcg
         {
             return pontos[pontos.Count - 1].getPonto();
         }
+        public void removePontoFinal()
+        {
+            pontos.RemoveAt(pontos.Count - 1);
+        }
         public void addPonto(Ponto novo)
         {
             pontos.Add(novo);
 
             if (pontos.Count.Equals(1))
                 pontos.Add(novo);
+        }
+
+        public void setColor(byte r, byte g, byte b)
+        {
+            base.ObjetoCor.CorR = r;
+            base.ObjetoCor.CorG = g;
+            base.ObjetoCor.CorB = b;
+
+
         }
 
 
@@ -42,7 +55,7 @@ namespace gcgcg
             {
                 pto.Desenhar();
             }
-
+            GL.Color3(base.ObjetoCor.CorR,base.ObjetoCor.CorG, base.ObjetoCor.CorB);
             GL.Begin(PrimitiveType.LineLoop);
             foreach (Ponto pto in pontos)
             {
