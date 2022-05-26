@@ -26,6 +26,9 @@ namespace gcgcg
         public void setTamanhoPonto(int novoTamanho){
             this.tamanhoDoPonto = novoTamanho;
         }
+        public Ponto4D getPonto(){
+            return base.PontosUltimo();
+        }
 
         protected override void DesenharObjeto()
         {
