@@ -71,10 +71,10 @@ namespace gcgcg
 
             objetoId = Utilitario.charProximo(objetoId);
             obj_Poligono = new Poligono(objetoId, null);
-            obj_Poligono.ObjetoCor.CorR = 255; obj_Poligono.ObjetoCor.CorG = 0; obj_Poligono.ObjetoCor.CorB = 255;
+            obj_Poligono.ObjetoCor.CorR = 255; obj_Poligono.ObjetoCor.CorG = 235; obj_Poligono.ObjetoCor.CorB = 51;
             objetosLista.Add(obj_Poligono);
             objetoSelecionado = obj_Poligono;
-
+ 
 
 
 
@@ -145,7 +145,27 @@ namespace gcgcg
                 bBoxDesenhar = !bBoxDesenhar;
 #endif
             else if (e.Key == Key.V)
-                mouseMoverPto = !mouseMoverPto;   //TODO: falta atualizar a BBox do objeto
+                mouseMoverPto = !mouseMoverPto;  //TODO: falta atualizar a BBox do objeto
+            else if (e.Key == Key.R)
+            {
+             
+                objetoSelecionado.ObjetoCor.CorR = 255;
+                objetoSelecionado.ObjetoCor.CorG = 51;
+                objetoSelecionado.ObjetoCor.CorB = 71;
+            }
+            else if (e.Key == Key.G)
+            {
+                objetoSelecionado.ObjetoCor.CorR = 71;
+                objetoSelecionado.ObjetoCor.CorG = 255;
+                objetoSelecionado.ObjetoCor.CorB = 51;
+
+            }
+            else if (e.Key == Key.B)
+            {
+                objetoSelecionado.ObjetoCor.CorR = 51;
+                objetoSelecionado.ObjetoCor.CorG = 71;
+                objetoSelecionado.ObjetoCor.CorB = 255;
+            }
             else
                 Console.WriteLine(" __ Tecla não implementada.");
         }
@@ -153,23 +173,24 @@ namespace gcgcg
         //TODO: não está considerando o NDC
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-          
-           if(estaDesenhandoPoligono){
-            mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
-            if (mouseMoverPto && (objetoSelecionado != null))
-            {               
-                obj_Poligono.getPontoFinal().X = mouseX;
-                obj_Poligono.getPontoFinal().Y = mouseY;
-            }
+
+            if (estaDesenhandoPoligono)
+            {
+                mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
+                if (mouseMoverPto && (objetoSelecionado != null))
+                {
+                    obj_Poligono.getPontoFinal().X = mouseX;
+                    obj_Poligono.getPontoFinal().Y = mouseY;
+                }
             }
         }
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-         
+
             if (e.Button == MouseButton.Left && estaDesenhandoPoligono)
-            {  
-              estaDesenhandoPoligono = true;
-               //ajuste copiado do N2
+            {
+                estaDesenhandoPoligono = true;
+                //ajuste copiado do N2
                 mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
 
                 //cria objeto Ponto para fazer parte do Poligono
@@ -184,7 +205,8 @@ namespace gcgcg
             }
             if (e.Button == MouseButton.Right)
             {
-              estaDesenhandoPoligono = false;
+                estaDesenhandoPoligono = false;
+                obj_Poligono.removePontoFinal();
 
             }
             //base.OnMouseDown(e);
