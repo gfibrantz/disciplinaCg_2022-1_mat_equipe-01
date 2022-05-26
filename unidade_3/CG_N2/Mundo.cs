@@ -21,6 +21,7 @@ namespace gcgcg
   {
 
     //teste
+    //novo comentario
     private static Mundo instanciaMundo = null;
 
     private Mundo(int width, int height) : base(width, height) { }
