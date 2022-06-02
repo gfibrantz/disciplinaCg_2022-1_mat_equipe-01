@@ -15,6 +15,7 @@ namespace gcgcg
     internal class Ponto : ObjetoGeometria
     {
         int tamanhoDoPonto;
+        
         public Ponto(char rotulo, Objeto paiRef, Ponto4D pto) : base(rotulo, paiRef)
         {
             base.PontosAdicionar(pto);
@@ -22,6 +23,18 @@ namespace gcgcg
             base.PrimitivaTipo = PrimitiveType.Points;
            
 
+        }
+        public double getX(){
+            return base.PontosUltimo().X;
+        }
+          public double getY(){
+            return base.PontosUltimo().Y;
+        }
+          public double getZ(){
+            return base.PontosUltimo().Z;
+        }
+          public double getW(){
+            return base.PontosUltimo().W;
         }
         public void setTamanhoPonto(int novoTamanho){
             this.tamanhoDoPonto = novoTamanho;

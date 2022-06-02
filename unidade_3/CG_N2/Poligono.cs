@@ -36,6 +36,11 @@ namespace gcgcg
             if (pontos.Count.Equals(1))
                 pontos.Add(novo);
         }
+        public void removePrimeiroPontoAuxiliar()
+        {
+            pontos.RemoveAt(0);
+
+        }
 
         public void setColor(byte r, byte g, byte b)
         {
@@ -78,9 +83,9 @@ namespace gcgcg
         {
             string retorno;
             retorno = "__ Objeto Poligono: " + base.rotulo + "\n";
-            for (var i = 0; i < pontosLista.Count; i++)
+            for (var i = 0; i < pontos.Count; i++)
             {
-                retorno += "P" + i + "[" + pontosLista[i].X + "," + pontosLista[i].Y + "," + pontosLista[i].Z + "," + pontosLista[i].W + "]" + "\n";
+                retorno += "P" + i + "[" + pontos[i].getX() + "," + pontos[i].getY() + "," + pontos[i].getZ() + "," + pontos[i].getW() + "]" + "\n";
             }
             return (retorno);
         }

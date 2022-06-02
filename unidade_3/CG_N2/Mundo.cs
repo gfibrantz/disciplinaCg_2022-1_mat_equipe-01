@@ -44,11 +44,11 @@ namespace gcgcg
         private char objetoId = '@';
         private bool bBoxDesenhar = false;
         int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
-        private bool mouseMoverPto = false;
+        private bool mouseMoverPto = true;
         private Retangulo obj_Retangulo;
         private Poligono obj_Poligono;
         private Ponto obj_Ponto;
-        bool estaDesenhandoPoligono = true;
+        bool estaDesenhandoPoligono = false;
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
     private Privado_Circulo obj_Circulo;
@@ -69,12 +69,13 @@ namespace gcgcg
             objetosLista.Add(obj_Retangulo);
             objetoSelecionado = obj_Retangulo;
 
-            objetoId = Utilitario.charProximo(objetoId);
-            obj_Poligono = new Poligono(objetoId, null);
-            obj_Poligono.ObjetoCor.CorR = 255; obj_Poligono.ObjetoCor.CorG = 235; obj_Poligono.ObjetoCor.CorB = 51;
-            objetosLista.Add(obj_Poligono);
-            objetoSelecionado = obj_Poligono;
- 
+            //comecamos ja com um objeto Poligono criado
+            // objetoId = Utilitario.charProximo(objetoId);
+            // obj_Poligono = new Poligono(objetoId, null);
+            // obj_Poligono.ObjetoCor.CorR = 255; obj_Poligono.ObjetoCor.CorG = 235; obj_Poligono.ObjetoCor.CorB = 51;
+            // objetosLista.Add(obj_Poligono);
+            // objetoSelecionado = obj_Poligono;
+
 
 
 
@@ -148,23 +149,46 @@ namespace gcgcg
                 mouseMoverPto = !mouseMoverPto;  //TODO: falta atualizar a BBox do objeto
             else if (e.Key == Key.R)
             {
-             
-                objetoSelecionado.ObjetoCor.CorR = 255;
-                objetoSelecionado.ObjetoCor.CorG = 51;
-                objetoSelecionado.ObjetoCor.CorB = 71;
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.ObjetoCor.CorR = 255;
+                    objetoSelecionado.ObjetoCor.CorG = 51;
+                    objetoSelecionado.ObjetoCor.CorB = 71;
+                }
             }
             else if (e.Key == Key.G)
             {
-                objetoSelecionado.ObjetoCor.CorR = 71;
-                objetoSelecionado.ObjetoCor.CorG = 255;
-                objetoSelecionado.ObjetoCor.CorB = 51;
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.ObjetoCor.CorR = 71;
+                    objetoSelecionado.ObjetoCor.CorG = 255;
+                    objetoSelecionado.ObjetoCor.CorB = 51;
+                }
 
             }
             else if (e.Key == Key.B)
             {
-                objetoSelecionado.ObjetoCor.CorR = 51;
-                objetoSelecionado.ObjetoCor.CorG = 71;
-                objetoSelecionado.ObjetoCor.CorB = 255;
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.ObjetoCor.CorR = 51;
+                    objetoSelecionado.ObjetoCor.CorG = 71;
+                    objetoSelecionado.ObjetoCor.CorB = 255;
+                }
+            }
+            else if (e.Key == Key.Enter)
+            {
+                //verifica se ainda estava desenhando com ponto auxiliar
+                //se sim, remove o ponto auxiliar
+                if (estaDesenhandoPoligono && objetoSelecionado is Poligono)
+                {
+                    Poligono aux = (Poligono)objetoSelecionado;
+                    //remove pontos auxiliares do desenho, o primeiro(para mostrar a linha) e o ultimo do rastro
+                    aux.removePontoFinal();
+                    aux.removePrimeiroPontoAuxiliar();
+                    //objetosLista.Add(aux);
+                    //TODO: talvez remover esta linha
+                    estaDesenhandoPoligono = false;
+                }
             }
             else
                 Console.WriteLine(" __ Tecla não implementada.");
@@ -174,22 +198,27 @@ namespace gcgcg
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
 
-            if (estaDesenhandoPoligono)
+            if (estaDesenhandoPoligono && objetoSelecionado != null)
             {
                 mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
                 if (mouseMoverPto && (objetoSelecionado != null))
                 {
-                    obj_Poligono.getPontoFinal().X = mouseX;
-                    obj_Poligono.getPontoFinal().Y = mouseY;
+                    if (objetoSelecionado is Poligono)
+                    {
+                        Poligono aux = (Poligono)objetoSelecionado;
+                        aux.getPontoFinal().X = mouseX;
+                        aux.getPontoFinal().Y = mouseY;
+                    }
+
                 }
             }
         }
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
 
-            if (e.Button == MouseButton.Left && estaDesenhandoPoligono)
+            if (e.Button == MouseButton.Left && estaDesenhandoPoligono)//continua desenho do poligono
             {
-                estaDesenhandoPoligono = true;
+
                 //ajuste copiado do N2
                 mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
 
@@ -197,16 +226,36 @@ namespace gcgcg
                 objetoId = Utilitario.charProximo(objetoId);
                 obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
                 obj_Ponto.ObjetoCor.CorR = 255; obj_Ponto.ObjetoCor.CorG = 0; obj_Ponto.ObjetoCor.CorB = 255;
-                //obj_Ponto.Add(obj_Ponto);
-                //objetoSelecionado = obj_Ponto;
 
+
+                //adiciona novo ponto ao poligono que ja esta sendo desenhado
                 obj_Poligono.addPonto(obj_Ponto);
+
+            }
+            else if (e.Button == MouseButton.Left && !estaDesenhandoPoligono)
+            {//se clicou e nao esta desenhando, é um novo poligono
+
+                //cria o novo poligon e seta que agora comecou o novo desenho
+                obj_Poligono = new Poligono(Utilitario.charProximo(objetoId), null);
+                estaDesenhandoPoligono = true;
+
+                //ajuste copiado do N2
+                mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
+
+                //cria objeto Ponto para fazer parte do Poligono
+                objetoId = Utilitario.charProximo(objetoId);
+                obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
+                obj_Ponto.ObjetoCor.CorR = 255; obj_Ponto.ObjetoCor.CorG = 0; obj_Ponto.ObjetoCor.CorB = 255;
+                obj_Poligono.addPonto(obj_Ponto);
+                objetoSelecionado = obj_Poligono;
+                objetosLista.Add(obj_Poligono);
 
             }
             if (e.Button == MouseButton.Right)
             {
                 estaDesenhandoPoligono = false;
                 obj_Poligono.removePontoFinal();
+
 
             }
             //base.OnMouseDown(e);
