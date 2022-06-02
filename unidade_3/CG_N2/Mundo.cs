@@ -187,6 +187,17 @@ namespace gcgcg
                     aux.addPonto(obj_Ponto);
                 }
             }
+            //Console.WriteLine(" [  S     ] N3-Exe07: alterna entre aberto e fechado o polígono selecionado. ");
+             else if (e.Key == Key.S)
+            {
+                if(objetoSelecionado is Poligono){
+                    if( objetoSelecionado.PrimitivaTipo == PrimitiveType.LineStrip)
+                        objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
+                    else
+                        objetoSelecionado.PrimitivaTipo = PrimitiveType.LineStrip;
+                }
+
+            }
             else if (e.Key == Key.Enter)
             {
                 //verifica se ainda estava desenhando com ponto auxiliar

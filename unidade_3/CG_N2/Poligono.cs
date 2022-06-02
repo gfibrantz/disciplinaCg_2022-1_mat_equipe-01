@@ -61,7 +61,7 @@ namespace gcgcg
                 pto.Desenhar();
             }
             GL.Color3(base.ObjetoCor.CorR,base.ObjetoCor.CorG, base.ObjetoCor.CorB);
-            GL.Begin(PrimitiveType.LineLoop);
+            GL.Begin(base.PrimitivaTipo);
             foreach (Ponto pto in pontos)
             {
                 GL.Vertex2(pto.getPonto().X, pto.getPonto().Y);
