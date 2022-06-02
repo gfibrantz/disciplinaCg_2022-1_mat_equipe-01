@@ -175,6 +175,18 @@ namespace gcgcg
                     objetoSelecionado.ObjetoCor.CorB = 255;
                 }
             }
+            // Console.WriteLine(" [Espaço  ] N3-Exe06: adiciona vértice ao polígono. ");
+            // como eh ADICIONA, so vai funcionar se ja tiver um poligono sendo desenhado
+            else if (e.Key == Key.Space && objetoSelecionado is Poligono)
+            {
+                if (objetoSelecionado != null)
+                {
+                    Poligono aux = (Poligono)objetoSelecionado;
+                    objetoId = Utilitario.charProximo(objetoId);
+                    obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
+                    aux.addPonto(obj_Ponto);
+                }
+            }
             else if (e.Key == Key.Enter)
             {
                 //verifica se ainda estava desenhando com ponto auxiliar
@@ -225,7 +237,7 @@ namespace gcgcg
                 //cria objeto Ponto para fazer parte do Poligono
                 objetoId = Utilitario.charProximo(objetoId);
                 obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
-                obj_Ponto.ObjetoCor.CorR = 255; obj_Ponto.ObjetoCor.CorG = 0; obj_Ponto.ObjetoCor.CorB = 255;
+               
 
 
                 //adiciona novo ponto ao poligono que ja esta sendo desenhado
@@ -245,7 +257,6 @@ namespace gcgcg
                 //cria objeto Ponto para fazer parte do Poligono
                 objetoId = Utilitario.charProximo(objetoId);
                 obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
-                obj_Ponto.ObjetoCor.CorR = 255; obj_Ponto.ObjetoCor.CorG = 0; obj_Ponto.ObjetoCor.CorB = 255;
                 obj_Poligono.addPonto(obj_Ponto);
                 objetoSelecionado = obj_Poligono;
                 objetosLista.Add(obj_Poligono);
