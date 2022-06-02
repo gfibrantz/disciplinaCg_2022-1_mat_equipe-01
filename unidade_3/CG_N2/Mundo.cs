@@ -198,6 +198,14 @@ namespace gcgcg
                 }
 
             }
+            //Console.WriteLine(" [  C     ] N3-Exe04: remove o polígono selecionado. ");
+            else if (e.Key == Key.C)
+            {
+                if(objetoSelecionado is Poligono){
+                   objetosLista.Remove(objetoSelecionado);
+                }
+
+            }
             else if (e.Key == Key.Enter)
             {
                 //verifica se ainda estava desenhando com ponto auxiliar
