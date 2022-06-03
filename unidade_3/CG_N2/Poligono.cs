@@ -16,30 +16,59 @@ namespace gcgcg
     internal class Poligono : ObjetoGeometria
     {
         protected List<Ponto> pontos = new List<Ponto>();
+        bool estaSendoDesenhado;
         public Poligono(char rotulo, Objeto paiRef) : base(rotulo, paiRef)
         {
-
+            estaSendoDesenhado = true;
         }
 
         public Ponto4D getPontoFinal()
         {
+            
             return pontos[pontos.Count - 1].getPonto();
         }
-        public void removePontoFinal()
+        private void removePontoFinal()
         {
             pontos.RemoveAt(pontos.Count - 1);
+
+            //TODO: remover gambiarra
+            //base.pontosLista.Add(novo.get);
+            base.PontosRemoverUltimo();
         }
         public void addPonto(Ponto novo)
         {
             pontos.Add(novo);
+            //base.pontosLista.Add(novo.get);
+            base.PontosAdicionar(novo.getPonto());
 
-            if (pontos.Count.Equals(1))
+            if (pontos.Count.Equals(1)){
                 pontos.Add(novo);
+                //gambi                 
+                base.PontosAdicionar(novo.getPonto());
+
+            }
         }
-        public void removePrimeiroPontoAuxiliar()
+        private void removePrimeiroPontoAuxiliar()
         {
             pontos.RemoveAt(0);
+            //TODO: isso é gambi
+            base.pontosLista.RemoveAt(0);
 
+        }
+        public void finalizaDesenhoPoligono(){
+            this.estaSendoDesenhado = false;
+            removePontoFinal();
+            removePrimeiroPontoAuxiliar();
+        }
+        public string imprimePontos()
+        {
+            string retorno;
+            retorno = "__ Objeto Poligono: " + base.rotulo + "\n";
+            for (var i = 0; i < pontos.Count; i++)
+            {
+                retorno += "P" + i + "[" + pontos[i].getX() + "," + pontos[i].getY() + "," + pontos[i].getZ() + "," + pontos[i].getW() + "]" + "\n";
+            }
+            return (retorno);
         }
 
         public void setColor(byte r, byte g, byte b)

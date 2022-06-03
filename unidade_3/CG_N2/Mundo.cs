@@ -46,7 +46,7 @@ namespace gcgcg
         int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
         private bool mouseMoverPto = true;
         private Retangulo obj_Retangulo;
-        private Poligono obj_Poligono;
+        private Poligono obj_PoligonoTemp;
         private Ponto obj_Ponto;
         bool estaDesenhandoPoligono = false;
 #if CG_Privado
@@ -186,12 +186,15 @@ namespace gcgcg
                     obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
                     aux.addPonto(obj_Ponto);
                 }
+                else
+                    criaPoligono();
             }
             //Console.WriteLine(" [  S     ] N3-Exe07: alterna entre aberto e fechado o polígono selecionado. ");
-             else if (e.Key == Key.S)
+            else if (e.Key == Key.S)
             {
-                if(objetoSelecionado is Poligono){
-                    if( objetoSelecionado.PrimitivaTipo == PrimitiveType.LineStrip)
+                if (objetoSelecionado is Poligono)
+                {
+                    if (objetoSelecionado.PrimitivaTipo == PrimitiveType.LineStrip)
                         objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
                     else
                         objetoSelecionado.PrimitivaTipo = PrimitiveType.LineStrip;
@@ -201,8 +204,19 @@ namespace gcgcg
             //Console.WriteLine(" [  C     ] N3-Exe04: remove o polígono selecionado. ");
             else if (e.Key == Key.C)
             {
-                if(objetoSelecionado is Poligono){
-                   objetosLista.Remove(objetoSelecionado);
+                if (objetoSelecionado is Poligono)
+                {
+                    objetosLista.Remove(objetoSelecionado);
+                    //objetoSelecionado=null;
+                    estaDesenhandoPoligono = false;
+                }
+
+            }
+            else if (e.Key == Key.P)
+            {
+                if (objetoSelecionado is Poligono)
+                {
+                    Console.WriteLine(objetoSelecionado.ToString());
                 }
 
             }
@@ -214,11 +228,14 @@ namespace gcgcg
                 {
                     Poligono aux = (Poligono)objetoSelecionado;
                     //remove pontos auxiliares do desenho, o primeiro(para mostrar a linha) e o ultimo do rastro
-                    aux.removePontoFinal();
-                    aux.removePrimeiroPontoAuxiliar();
+                    aux.finalizaDesenhoPoligono();
                     //objetosLista.Add(aux);
-                    //TODO: talvez remover esta linha
+
                     estaDesenhandoPoligono = false;
+
+                    //deseleciona poligono
+                    objetoSelecionado = null;
+                    obj_PoligonoTemp = null;
                 }
             }
             else
@@ -228,10 +245,11 @@ namespace gcgcg
         //TODO: não está considerando o NDC
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
+            mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
 
             if (estaDesenhandoPoligono && objetoSelecionado != null)
             {
-                mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
+                
                 if (mouseMoverPto && (objetoSelecionado != null))
                 {
                     if (objetoSelecionado is Poligono)
@@ -256,39 +274,56 @@ namespace gcgcg
                 //cria objeto Ponto para fazer parte do Poligono
                 objetoId = Utilitario.charProximo(objetoId);
                 obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
-               
+
 
 
                 //adiciona novo ponto ao poligono que ja esta sendo desenhado
-                obj_Poligono.addPonto(obj_Ponto);
+                obj_PoligonoTemp.addPonto(obj_Ponto);
 
             }
             else if (e.Button == MouseButton.Left && !estaDesenhandoPoligono)
             {//se clicou e nao esta desenhando, é um novo poligono
 
                 //cria o novo poligon e seta que agora comecou o novo desenho
-                obj_Poligono = new Poligono(Utilitario.charProximo(objetoId), null);
-                estaDesenhandoPoligono = true;
+                // obj_PoligonoTemp = new Poligono(Utilitario.charProximo(objetoId), null);
+                // estaDesenhandoPoligono = true;
 
-                //ajuste copiado do N2
-                mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
+                // //ajuste copiado do N2
+                // mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
 
-                //cria objeto Ponto para fazer parte do Poligono
-                objetoId = Utilitario.charProximo(objetoId);
-                obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
-                obj_Poligono.addPonto(obj_Ponto);
-                objetoSelecionado = obj_Poligono;
-                objetosLista.Add(obj_Poligono);
+                // //cria objeto Ponto para fazer parte do Poligono
+                // objetoId = Utilitario.charProximo(objetoId);
+                // obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
+                // obj_PoligonoTemp.addPonto(obj_Ponto);
+                // objetoSelecionado = obj_PoligonoTemp;
+                // objetosLista.Add(obj_PoligonoTemp);
+
+                criaPoligono();
 
             }
             if (e.Button == MouseButton.Right)
             {
                 estaDesenhandoPoligono = false;
-                obj_Poligono.removePontoFinal();
+                obj_PoligonoTemp.finalizaDesenhoPoligono();
 
 
             }
             //base.OnMouseDown(e);
+        }
+        public void criaPoligono()
+        {
+            //cria o novo poligon e seta que agora comecou o novo desenho
+            obj_PoligonoTemp = new Poligono(Utilitario.charProximo(objetoId), null);
+            estaDesenhandoPoligono = true;
+
+          
+
+            //cria objeto Ponto para fazer parte do Poligono
+            objetoId = Utilitario.charProximo(objetoId);
+            obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX,750- mouseY, 0));
+            obj_PoligonoTemp.addPonto(obj_Ponto);
+            objetoSelecionado = obj_PoligonoTemp;
+            objetosLista.Add(obj_PoligonoTemp);
         }
 
 #if CG_Gizmo
