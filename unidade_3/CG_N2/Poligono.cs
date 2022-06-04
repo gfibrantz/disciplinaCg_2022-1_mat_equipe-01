@@ -15,7 +15,7 @@ namespace gcgcg
 {
     internal class Poligono : ObjetoGeometria
     {
-        protected List<Ponto> pontos = new List<Ponto>();
+       
         bool estaSendoDesenhado;
         public Poligono(char rotulo, Objeto paiRef) : base(rotulo, paiRef)
         {
@@ -25,7 +25,7 @@ namespace gcgcg
         public Ponto4D getPontoFinal()
         {
             
-            return pontos[pontos.Count - 1].getPonto();
+            return base.PontosUltimo();
         }
         public bool getClicouDentro(double xClick, double yClick){
            
@@ -56,57 +56,45 @@ namespace gcgcg
         }
         private void removePontoFinal()
         {
-           // pontos.RemoveAt(pontos.Count - 1);
-
-            //TODO: remover gambiarra
-            //base.pontosLista.Add(novo.get);
-            //base.PontosRemoverUltimo();
+           base.PontosRemoverUltimo();
         }
          public void removePonto(Ponto4D pto)
         {
-            //TODO: gambi
-            foreach(Ponto p in pontos){
-                if(p.getX() == pto.X && p.getY() == pto.Y){
-                    pontos.Remove(p);
-                    break;
-                }
-
-            }          
+            
+            //TODO: verificar se preciar criar metodo pra tratar(na objetoGeometria)     
             base.pontosLista.Remove(pto);
         }
-        public void addPonto(Ponto novo)
+        public void addPonto(Ponto4D novo)
         {
-            pontos.Add(novo);
-            //base.pontosLista.Add(novo.get);
-            base.PontosAdicionar(novo.getPonto());
+           
+           
 
-            if (pontos.Count.Equals(1)){
-                pontos.Add(novo);
-                //gambi                 
-                base.PontosAdicionar(novo.getPonto());
-
+            if ( base.pontosLista.Count.Equals(0)){
+                base.PontosAdicionar(novo);
+                base.PontosAdicionar(new Ponto4D(novo.X, novo.Y));   
+                
+            }else {
+                 //base.PontosAlterar(novo,pontosLista.Count-1);
+                 base.PontosAdicionar(novo);   
             }
-        }
-        private void removePrimeiroPontoAuxiliar()
-        {
-            pontos.RemoveAt(0);
-            //TODO: isso é gambi
-            base.pontosLista.RemoveAt(0);
+            
+            
 
         }
+        
         public void finalizaDesenhoPoligono(){
             this.estaSendoDesenhado = false;
             removePontoFinal();
-            removePrimeiroPontoAuxiliar();
+            
         }
         public string imprimePontos()
         {
             //TODO: verifica se esta sendo desenhado
             string retorno;
             retorno = "__ Objeto Poligono: " + base.rotulo + "\n";
-            for (var i = 0; i < pontos.Count; i++)
+            for (var i = 0; i < pontosLista.Count; i++)
             {
-                retorno += "P" + i + "[" + pontos[i].getX() + "," + pontos[i].getY() + "," + pontos[i].getZ() + "," + pontos[i].getW() + "]" + "\n";
+                retorno += "P" + i + "[" + pontosLista[i].X + "," + pontosLista[i].Y + "," + pontosLista[i].Z + "," + pontosLista[i].W + "]" + "\n";
             }
             return (retorno);
         }
@@ -123,16 +111,19 @@ namespace gcgcg
         protected override void DesenharObjeto()
         {
 #if CG_OpenGL && !CG_DirectX
-
-            foreach (Ponto pto in pontos)
+            GL.Color3(base.ObjetoCor.CorR,base.ObjetoCor.CorG, base.ObjetoCor.CorB);
+            GL.PointSize(10);
+            GL.Begin(PrimitiveType.Points);
+            foreach (Ponto4D pto in pontosLista)
             {
-                pto.Desenhar();
+                GL.Vertex2(pto.X, pto.Y);
             }
+            GL.End();
             GL.Color3(base.ObjetoCor.CorR,base.ObjetoCor.CorG, base.ObjetoCor.CorB);
             GL.Begin(base.PrimitivaTipo);
-            foreach (Ponto pto in pontos)
+            foreach (Ponto4D pto in pontosLista)
             {
-                GL.Vertex2(pto.getPonto().X, pto.getPonto().Y);
+                GL.Vertex2(pto.X, pto.Y);
             }
             GL.End();
 
@@ -151,10 +142,10 @@ namespace gcgcg
         {
             string retorno;
             retorno = "__ Objeto Poligono: " + base.rotulo + "\n";
-            Console.WriteLine("Quantidade de pontos" + pontos.Count);
-            for (var i = 0; i < pontos.Count; i++)
+            Console.WriteLine("Quantidade de pontos" + pontosLista.Count);
+            for (var i = 0; i < pontosLista.Count; i++)
             {
-                retorno += "P" + i + "[" + pontos[i].getX() + "," + pontos[i].getY() + "," + pontos[i].getZ() + "," + pontos[i].getW() + "]" + "\n";
+                retorno += "P" + i + "[" + pontosLista[i].X + "," + pontosLista[i].Y + "," + pontosLista[i].Z + "," + pontosLista[i].W + "]" + "\n";
             }
             return (retorno);
         }

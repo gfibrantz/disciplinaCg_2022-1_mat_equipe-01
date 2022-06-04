@@ -177,16 +177,13 @@ namespace gcgcg
             }
             // Console.WriteLine(" [Espaço  ] N3-Exe06: adiciona vértice ao polígono. ");
             // como eh ADICIONA, so vai funcionar se ja tiver um poligono sendo desenhado
-            else if (e.Key == Key.Space && objetoSelecionado is Poligono)
+            else if (e.Key == Key.Space )
             {
-                if (objetoSelecionado != null)
+                if (obj_PoligonoTemp != null && estaDesenhandoPoligono)
                 {
-                    Poligono aux = (Poligono)objetoSelecionado;
-                    objetoId = Utilitario.charProximo(objetoId);
-                    obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
-                    aux.addPonto(obj_Ponto);
+                    obj_PoligonoTemp.addPonto( new Ponto4D(mouseX, mouseY));
                 }
-                else
+                else//se nao tem objeto selecionado, entao esta criando um novo
                     criaPoligono();
             }
             //Console.WriteLine(" [  S     ] N3-Exe07: alterna entre aberto e fechado o polígono selecionado. ");
@@ -206,13 +203,14 @@ namespace gcgcg
             {
                 if (objetoSelecionado is Poligono)
                 {
-                    objetosLista.Remove(objetoSelecionado);
-                    //objetoSelecionado=null;
+                    objetosLista.Remove(objetoSelecionado);                   
                     estaDesenhandoPoligono = false;
+                    objetoSelecionado = null;
+                    obj_PoligonoTemp = null;
                 }
 
             }
-            else if (e.Key == Key.P)
+            else if (e.Key == Key.P)//mostra as coordenadas do poligono selecionado
             {
                 if (objetoSelecionado is Poligono )
                 {
@@ -242,18 +240,18 @@ namespace gcgcg
             {
                 //verifica se ainda estava desenhando com ponto auxiliar
                 //se sim, remove o ponto auxiliar
-                if (estaDesenhandoPoligono && objetoSelecionado is Poligono)
+                if (estaDesenhandoPoligono && obj_PoligonoTemp !=null)
                 {
-                    Poligono aux = (Poligono)objetoSelecionado;
+                   
                     //remove pontos auxiliares do desenho, o primeiro(para mostrar a linha) e o ultimo do rastro
-                    aux.finalizaDesenhoPoligono();
-                    //objetosLista.Add(aux);
-
-                    estaDesenhandoPoligono = false;
-
+                    obj_PoligonoTemp.finalizaDesenhoPoligono();
+                   
+                    
                     //deseleciona poligono
                     objetoSelecionado = null;
                     obj_PoligonoTemp = null;
+                    estaDesenhandoPoligono = false;
+
                 }
             }
             // [  V     ] N3-Exe05: move o vértice do polígono selecionado que estiver mais perto do mouse. ");
@@ -276,17 +274,14 @@ namespace gcgcg
         {
             mouseX = e.Position.X; mouseY = 600 - e.Position.Y;
 
-            if (estaDesenhandoPoligono && objetoSelecionado != null)
+            if (estaDesenhandoPoligono && obj_PoligonoTemp != null)
             {
                 
-                if (mouseMoverPto && (objetoSelecionado != null))
+                if (mouseMoverPto)
                 {
-                    if (objetoSelecionado is Poligono)
-                    {
-                        Poligono aux = (Poligono)objetoSelecionado;
-                        aux.getPontoFinal().X = mouseX;
-                        aux.getPontoFinal().Y = mouseY;
-                    }
+                     
+                    obj_PoligonoTemp.getPontoFinal().X = mouseX;
+                    obj_PoligonoTemp.getPontoFinal().Y = mouseY;                    
 
                 }
             }
@@ -300,14 +295,9 @@ namespace gcgcg
                 //ajuste copiado do N2
                // mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
 
-                //cria objeto Ponto para fazer parte do Poligono
-                objetoId = Utilitario.charProximo(objetoId);
-                obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
-
-
-
+                
                 //adiciona novo ponto ao poligono que ja esta sendo desenhado
-                obj_PoligonoTemp.addPonto(obj_Ponto);
+                obj_PoligonoTemp.addPonto(new Ponto4D(mouseX, mouseY));
 
             }
             else if (e.Button == MouseButton.Left && !estaDesenhandoPoligono)
@@ -334,6 +324,7 @@ namespace gcgcg
             {
                 estaDesenhandoPoligono = false;
                 obj_PoligonoTemp.finalizaDesenhoPoligono();
+                obj_PoligonoTemp = null;
                 objetoSelecionado=null;
 
 
@@ -344,15 +335,17 @@ namespace gcgcg
         {
             //cria o novo poligon e seta que agora comecou o novo desenho
             obj_PoligonoTemp = new Poligono(Utilitario.charProximo(objetoId), null);
+            objetoSelecionado = obj_PoligonoTemp;
+            
             estaDesenhandoPoligono = true;
 
           
 
             //cria objeto Ponto para fazer parte do Poligono
-            objetoId = Utilitario.charProximo(objetoId);
-            obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
-            obj_PoligonoTemp.addPonto(obj_Ponto);
-            objetoSelecionado = obj_PoligonoTemp;
+          
+            obj_PoligonoTemp.addPonto(new Ponto4D(mouseX, mouseY));
+            
+            //TODO: adiciona esse novo poligono na lista? ou só quando encerrar desenho?
             objetosLista.Add(obj_PoligonoTemp);
         }
      
