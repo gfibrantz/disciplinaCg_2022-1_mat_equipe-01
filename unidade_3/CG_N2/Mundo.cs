@@ -58,7 +58,7 @@ namespace gcgcg
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            camera.xmin = 0; camera.xmax = 750; camera.ymin = 0; camera.ymax = 750;
+            camera.xmin = 0; camera.xmax = 600; camera.ymin = 0; camera.ymax = 600;
 
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
@@ -214,12 +214,30 @@ namespace gcgcg
             }
             else if (e.Key == Key.P)
             {
-                if (objetoSelecionado is Poligono)
+                if (objetoSelecionado is Poligono )
                 {
+                    obj_PoligonoTemp = (Poligono)objetoSelecionado;
+
                     Console.WriteLine(objetoSelecionado.ToString());
                 }
 
             }
+            //Console.WriteLine(" [  D     ] N3-Exe05: remove o vértice do polígono selecionado que estiver mais perto do mouse. ");
+            else if (e.Key == Key.D)
+            {
+                if(objetoSelecionado != null){
+                    obj_PoligonoTemp = (Poligono)objetoSelecionado;
+                   
+                   //encontra o vertice mais proximo e remove
+                    obj_PoligonoTemp.removePonto(obj_PoligonoTemp.getVerticeMaisProximo(mouseX,mouseY));
+                }
+            }
+            //TODO: remover, adicionado para testes
+             else if (e.Key == Key.K)
+            {
+                objetoSelecionado = (Poligono)objetosLista[1];
+            }
+
             else if (e.Key == Key.Enter)
             {
                 //verifica se ainda estava desenhando com ponto auxiliar
@@ -238,6 +256,17 @@ namespace gcgcg
                     obj_PoligonoTemp = null;
                 }
             }
+            // [  V     ] N3-Exe05: move o vértice do polígono selecionado que estiver mais perto do mouse. ");
+            else if(e.Key == Key.V){
+                if(objetoSelecionado != null && objetoSelecionado is Poligono){
+                    obj_PoligonoTemp =(Poligono) objetoSelecionado;
+                   
+                    
+
+                }
+
+
+            }
             else
                 Console.WriteLine(" __ Tecla não implementada.");
         }
@@ -245,7 +274,7 @@ namespace gcgcg
         //TODO: não está considerando o NDC
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-            mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
+            mouseX = e.Position.X; mouseY = 600 - e.Position.Y;
 
             if (estaDesenhandoPoligono && objetoSelecionado != null)
             {
@@ -269,7 +298,7 @@ namespace gcgcg
             {
 
                 //ajuste copiado do N2
-                mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
+               // mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
 
                 //cria objeto Ponto para fazer parte do Poligono
                 objetoId = Utilitario.charProximo(objetoId);
@@ -305,6 +334,7 @@ namespace gcgcg
             {
                 estaDesenhandoPoligono = false;
                 obj_PoligonoTemp.finalizaDesenhoPoligono();
+                objetoSelecionado=null;
 
 
             }
@@ -320,12 +350,12 @@ namespace gcgcg
 
             //cria objeto Ponto para fazer parte do Poligono
             objetoId = Utilitario.charProximo(objetoId);
-            obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX,750- mouseY, 0));
+            obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
             obj_PoligonoTemp.addPonto(obj_Ponto);
             objetoSelecionado = obj_PoligonoTemp;
             objetosLista.Add(obj_PoligonoTemp);
         }
-
+     
 #if CG_Gizmo
         private void Sru3D()
         {

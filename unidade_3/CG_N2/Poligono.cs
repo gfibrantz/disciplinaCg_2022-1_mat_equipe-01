@@ -27,13 +27,52 @@ namespace gcgcg
             
             return pontos[pontos.Count - 1].getPonto();
         }
+        public bool getClicouDentro(double xClick, double yClick){
+           
+            if(base.PrimitivaTipo == PrimitiveType.LineLoop){
+                return Matematica.ScanLineTop(base.pontosLista, xClick, yClick,true);
+            }
+
+             return Matematica.ScanLineTop(base.pontosLista, xClick, yClick,false);          
+
+        }
+        public Ponto4D getVerticeMaisProximo(double xClick, double yClick){
+            Ponto4D maisProximo = base.PontosUltimo();
+            double distMenor = Double.MaxValue;
+
+            //analisa todos os pontos do poligono
+            foreach(Ponto4D pto in pontosLista){
+                double distAtual =  Matematica.DistanciaEntrePontos(pto.X,pto.Y,xClick,yClick);
+                //se a distancia atual é menor que a salva
+                if(distAtual < distMenor){
+                    distMenor = distAtual;
+                    maisProximo = pto;
+                }
+               
+            }
+
+           return maisProximo;
+
+        }
         private void removePontoFinal()
         {
-            pontos.RemoveAt(pontos.Count - 1);
+           // pontos.RemoveAt(pontos.Count - 1);
 
             //TODO: remover gambiarra
             //base.pontosLista.Add(novo.get);
-            base.PontosRemoverUltimo();
+            //base.PontosRemoverUltimo();
+        }
+         public void removePonto(Ponto4D pto)
+        {
+            //TODO: gambi
+            foreach(Ponto p in pontos){
+                if(p.getX() == pto.X && p.getY() == pto.Y){
+                    pontos.Remove(p);
+                    break;
+                }
+
+            }          
+            base.pontosLista.Remove(pto);
         }
         public void addPonto(Ponto novo)
         {
@@ -62,6 +101,7 @@ namespace gcgcg
         }
         public string imprimePontos()
         {
+            //TODO: verifica se esta sendo desenhado
             string retorno;
             retorno = "__ Objeto Poligono: " + base.rotulo + "\n";
             for (var i = 0; i < pontos.Count; i++)
@@ -76,7 +116,6 @@ namespace gcgcg
             base.ObjetoCor.CorR = r;
             base.ObjetoCor.CorG = g;
             base.ObjetoCor.CorB = b;
-
 
         }
 
@@ -112,6 +151,7 @@ namespace gcgcg
         {
             string retorno;
             retorno = "__ Objeto Poligono: " + base.rotulo + "\n";
+            Console.WriteLine("Quantidade de pontos" + pontos.Count);
             for (var i = 0; i < pontos.Count; i++)
             {
                 retorno += "P" + i + "[" + pontos[i].getX() + "," + pontos[i].getY() + "," + pontos[i].getZ() + "," + pontos[i].getW() + "]" + "\n";
