@@ -45,6 +45,7 @@ namespace gcgcg
         private bool bBoxDesenhar = false;
         int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
         private bool mouseMoverPto = true;
+        private bool alterandoVertice = false;
         private Retangulo obj_Retangulo;
         private Poligono obj_PoligonoTemp;
         private Ponto obj_Ponto;
@@ -67,7 +68,9 @@ namespace gcgcg
             obj_Retangulo = new Retangulo(objetoId, null, new Ponto4D(50, 50, 0), new Ponto4D(150, 150, 0));
             obj_Retangulo.ObjetoCor.CorR = 255; obj_Retangulo.ObjetoCor.CorG = 0; obj_Retangulo.ObjetoCor.CorB = 255;
             objetosLista.Add(obj_Retangulo);
-            objetoSelecionado = obj_Retangulo;
+
+            obj_Ponto =  new Ponto('@', null, new Ponto4D(0,0));
+            
 
             //comecamos ja com um objeto Poligono criado
             // objetoId = Utilitario.charProximo(objetoId);
@@ -145,8 +148,8 @@ namespace gcgcg
             else if (e.Key == Key.O)
                 bBoxDesenhar = !bBoxDesenhar;
 #endif
-            else if (e.Key == Key.V)
-                mouseMoverPto = !mouseMoverPto;  //TODO: falta atualizar a BBox do objeto
+            //else if (e.Key == Key.V)
+                //mouseMoverPto = !mouseMoverPto;  //TODO: falta atualizar a BBox do objeto
             else if (e.Key == Key.R)
             {
                 if (objetoSelecionado != null)
@@ -230,6 +233,21 @@ namespace gcgcg
                     obj_PoligonoTemp.removePonto(obj_PoligonoTemp.getVerticeMaisProximo(mouseX,mouseY));
                 }
             }
+            //    Console.WriteLine(" [  V     ] N3-Exe05: move o vértice do polígono selecionado que estiver mais perto do mouse. ");
+            else if (e.Key == Key.V)
+            {
+                
+                if(objetoSelecionado != null){
+                    obj_PoligonoTemp = (Poligono)objetoSelecionado;
+                   
+                   //encontra o vertice mais proximo e remove
+                    
+                    alterandoVertice= true;
+                    //TODO: FUNCIONA?
+                    obj_Ponto.setPonto(obj_PoligonoTemp.getVerticeMaisProximo(mouseX,mouseY));
+                }
+            }
+
             //TODO: remover, adicionado para testes
              else if (e.Key == Key.K)
             {
@@ -253,18 +271,13 @@ namespace gcgcg
                     estaDesenhandoPoligono = false;
 
                 }
-            }
-            // [  V     ] N3-Exe05: move o vértice do polígono selecionado que estiver mais perto do mouse. ");
-            else if(e.Key == Key.V){
-                if(objetoSelecionado != null && objetoSelecionado is Poligono){
-                    obj_PoligonoTemp =(Poligono) objetoSelecionado;
-                   
-                    
+                else if(alterandoVertice)
+                {
+                    alterandoVertice = !alterandoVertice;
 
                 }
-
-
             }
+           
             else
                 Console.WriteLine(" __ Tecla não implementada.");
         }
@@ -276,7 +289,7 @@ namespace gcgcg
 
             if (estaDesenhandoPoligono && obj_PoligonoTemp != null)
             {
-                
+                          
                 if (mouseMoverPto)
                 {
                      
@@ -284,6 +297,12 @@ namespace gcgcg
                     obj_PoligonoTemp.getPontoFinal().Y = mouseY;                    
 
                 }
+            }//se nao esta desenhando, esta ajustando um vertice especifico
+            if (alterandoVertice)
+            {
+                obj_Ponto.setPonto(mouseX, mouseY);
+                     
+
             }
         }
         protected override void OnMouseDown(MouseButtonEventArgs e)

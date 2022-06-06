@@ -42,6 +42,14 @@ namespace gcgcg
         public Ponto4D getPonto(){
             return base.PontosUltimo();
         }
+        public void setPonto(Ponto4D novo){
+            base.PontosAlterar(novo, 0);
+        }
+        public void setPonto(double x , double y){
+            base.PontosUltimo().X = x;
+            base.PontosUltimo().Y = y;
+
+        }
 
         protected override void DesenharObjeto()
         {

@@ -56,17 +56,51 @@ namespace gcgcg
         }
         private void removePontoFinal()
         {
-           base.PontosRemoverUltimo();
+          
+            if(estaNoLimiteBBox(base.PontosUltimo().X, base.PontosUltimo().Y)){
+                base.PontosRemoverUltimo();
+                AtualizaBBox();        
+
+            }
+            else{
+                base.PontosRemoverUltimo();
+            }
+           
+        }
+        public void AtualizaBBox(){
+            if(base.pontosLista.Count >=1){
+                //primeiros limites com os do p0
+                BBox.Atribuir(pontosLista[0]);
+                foreach(Ponto4D pto in pontosLista){
+                    BBox.Atualizar(pto);
+                }
+            }
+
         }
          public void removePonto(Ponto4D pto)
         {
             
-            //TODO: verificar se preciar criar metodo pra tratar(na objetoGeometria)     
-            base.pontosLista.Remove(pto);
+            if(estaNoLimiteBBox(pto.X, pto.Y))
+            {
+                 base.pontosLista.Remove(pto);
+                 AtualizaBBox();
+            }
+            else{
+                 base.pontosLista.Remove(pto);
+            }
+           
+            
+        }
+        private bool estaNoLimiteBBox(double x, double y){
+            if(x == BBox.obterMaiorX || x == BBox.obterMenorX)
+                return true;
+            if(y == BBox.obterMaiorY || y == BBox.obterMenorY)
+                return true;    
+
+            return false;
         }
         public void addPonto(Ponto4D novo)
-        {
-           
+        { 
            
 
             if ( base.pontosLista.Count.Equals(0)){
@@ -75,7 +109,7 @@ namespace gcgcg
                 
             }else {
                  //base.PontosAlterar(novo,pontosLista.Count-1);
-                 base.PontosAdicionar(novo);   
+                base.PontosAdicionar(novo);   
             }
             
             
