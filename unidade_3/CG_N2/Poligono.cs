@@ -67,12 +67,13 @@ namespace gcgcg
             }
            
         }
+      
         public void AtualizaBBox(){
             if(base.pontosLista.Count >=1){
                 //primeiros limites com os do p0
-                BBox.Atribuir(pontosLista[0]);
+                BBox.Atribuir(Transformacao4D.MultiplicarPonto(pontosLista[0]));
                 foreach(Ponto4D pto in pontosLista){
-                    BBox.Atualizar(pto);
+                    BBox.Atualizar(Transformacao4D.MultiplicarPonto(pto));
                 }
             }
 
@@ -150,14 +151,15 @@ namespace gcgcg
             GL.Begin(PrimitiveType.Points);
             foreach (Ponto4D pto in pontosLista)
             {
-                GL.Vertex2(pto.X, pto.Y);
+                GL.Vertex2(Transformacao4D.MultiplicarPonto(pto).X, Transformacao4D.MultiplicarPonto(pto).Y);
             }
             GL.End();
             GL.Color3(base.ObjetoCor.CorR,base.ObjetoCor.CorG, base.ObjetoCor.CorB);
             GL.Begin(base.PrimitivaTipo);
             foreach (Ponto4D pto in pontosLista)
             {
-                GL.Vertex2(pto.X, pto.Y);
+                
+                GL.Vertex2(Transformacao4D.MultiplicarPonto(pto).X, Transformacao4D.MultiplicarPonto(pto).Y);
             }
             GL.End();
 

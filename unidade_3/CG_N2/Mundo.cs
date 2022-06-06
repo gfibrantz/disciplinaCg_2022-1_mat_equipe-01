@@ -50,6 +50,9 @@ namespace gcgcg
         private Poligono obj_PoligonoTemp;
         private Ponto obj_Ponto;
         bool estaDesenhandoPoligono = false;
+        private double rotacaoX = 0;
+        private double rotacaoY = 0;
+        private double rotacaoZ = 0;
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
     private Privado_Circulo obj_Circulo;
@@ -213,6 +216,7 @@ namespace gcgcg
                 }
 
             }
+            // Console.WriteLine(" [  P     ]         : exibe os vértices do polígono selecionado. ");
             else if (e.Key == Key.P)//mostra as coordenadas do poligono selecionado
             {
                 if (objetoSelecionado is Poligono )
@@ -253,6 +257,12 @@ namespace gcgcg
             {
                 objetoSelecionado = (Poligono)objetosLista[1];
             }
+            // Console.WriteLine(" [  M     ]         : exibe matriz de transformação do polígono selecionado. ");
+             else if (e.Key == Key.M)
+            {
+                  Console.WriteLine(objetoSelecionado.Transformacao4D.ToString());
+            }
+
 
             else if (e.Key == Key.Enter)
             {
@@ -277,7 +287,50 @@ namespace gcgcg
 
                 }
             }
-           
+            //      Console.WriteLine(" [  X     ]         : rotação entorno do eixo X. ");
+            else if (e.Key == Key.X)
+            {
+                if(objetoSelecionado!=null){
+                    rotacaoX+=0.2;
+                    objetoSelecionado.Transformacao4D.AtribuirRotacaoX(rotacaoX);
+
+                }
+            }
+            //Console.WriteLine(" [  Y     ]         : rotação entorno do eixo Y. ");     
+            else if (e.Key == Key.Y)
+            {
+                if(objetoSelecionado!=null){
+                    rotacaoY+= 0.2;
+                    objetoSelecionado.Transformacao4D.AtribuirRotacaoY(rotacaoY);
+                    obj_PoligonoTemp = (Poligono)objetoSelecionado;
+                    obj_PoligonoTemp.AtualizaBBox();
+
+                }
+            }
+            // Console.WriteLine(" [  Z     ]         : rotação entorno do eixo Z. ");
+            else if (e.Key == Key.Z)
+            {
+                if(objetoSelecionado!=null){
+                    rotacaoZ+=0.2;
+
+                    objetoSelecionado.Transformacao4D.AtribuirRotacaoZ(rotacaoZ);
+
+                }
+            }
+            else if (e.Key == Key.A)
+            {
+                //quando muda a selecao, resseta os parametros
+                
+               zeraRotacoes();
+            }
+            // Console.WriteLine(" [  I     ]         : aplica a matriz Identidade no polígono selecionado. ");
+            else if (e.Key == Key.I)
+            {
+                //matriz identidade volta "tudo pro lugar",entao tmb zera rotacoes
+                objetoSelecionado.Transformacao4D.AtribuirIdentidade();
+                zeraRotacoes();
+               
+            }
             else
                 Console.WriteLine(" __ Tecla não implementada.");
         }
@@ -301,6 +354,7 @@ namespace gcgcg
             if (alterandoVertice)
             {
                 obj_Ponto.setPonto(mouseX, mouseY);
+                obj_PoligonoTemp.AtualizaBBox();
                      
 
             }
@@ -345,6 +399,7 @@ namespace gcgcg
                 obj_PoligonoTemp.finalizaDesenhoPoligono();
                 obj_PoligonoTemp = null;
                 objetoSelecionado=null;
+                alterandoVertice = false;
 
 
             }
@@ -352,11 +407,17 @@ namespace gcgcg
         }
         public void criaPoligono()
         {
-            //cria o novo poligon e seta que agora comecou o novo desenho
+             //cria o novo poligon e seta que agora comecou o novo desenho
             obj_PoligonoTemp = new Poligono(Utilitario.charProximo(objetoId), null);
-            objetoSelecionado = obj_PoligonoTemp;
-            
             estaDesenhandoPoligono = true;
+            if(objetoSelecionado!=null)
+            {
+                objetoSelecionado.FilhoAdicionar(obj_PoligonoTemp);
+            }
+           
+            
+            objetoSelecionado = obj_PoligonoTemp;            
+            
 
           
 
@@ -366,6 +427,11 @@ namespace gcgcg
             
             //TODO: adiciona esse novo poligono na lista? ou só quando encerrar desenho?
             objetosLista.Add(obj_PoligonoTemp);
+        }
+        public void zeraRotacoes(){
+            rotacaoX = 0;
+            rotacaoY = 0;
+            rotacaoZ = 0;
         }
      
 #if CG_Gizmo

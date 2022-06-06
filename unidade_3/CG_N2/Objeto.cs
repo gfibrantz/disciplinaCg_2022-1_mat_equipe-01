@@ -21,6 +21,10 @@ namespace gcgcg
     public float PrimitivaTamanho { get => primitivaTamanho; set => primitivaTamanho = value; }
     private BBox bBox = new BBox();
     public BBox BBox { get => bBox; set => bBox = value; }
+
+    //objeto com a matriz de transformacao
+    private Transformacao4D tTransformacao = new Transformacao4D();
+    public Transformacao4D Transformacao4D { get => tTransformacao; set => tTransformacao = value; }
     private List<Objeto> objetosLista = new List<Objeto>();
 
     public Objeto(char rotulo, Objeto paiRef)
