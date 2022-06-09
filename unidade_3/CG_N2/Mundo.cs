@@ -72,8 +72,8 @@ namespace gcgcg
             obj_Retangulo.ObjetoCor.CorR = 255; obj_Retangulo.ObjetoCor.CorG = 0; obj_Retangulo.ObjetoCor.CorB = 255;
             objetosLista.Add(obj_Retangulo);
 
-            obj_Ponto =  new Ponto('@', null, new Ponto4D(0,0));
-            
+            obj_Ponto = new Ponto('@', null, new Ponto4D(0, 0));
+
 
             //comecamos ja com um objeto Poligono criado
             // objetoId = Utilitario.charProximo(objetoId);
@@ -152,7 +152,172 @@ namespace gcgcg
                 bBoxDesenhar = !bBoxDesenhar;
 #endif
             //else if (e.Key == Key.V)
-                //mouseMoverPto = !mouseMoverPto;  //TODO: falta atualizar a BBox do objeto
+            //mouseMoverPto = !mouseMoverPto;  //TODO: falta atualizar a BBox do objeto
+
+            //Console.WriteLine(" [Enter   ] N3-Exe09: termina adição e mover de pontos, desseleciona polígono. ");
+            else if (e.Key == Key.Enter)
+            {
+                finalizaDesenhoPoligono();
+
+            }
+            // Console.WriteLine(" [Espaço  ] N3-Exe06: adiciona vértice ao polígono. ");
+            else if (e.Key == Key.Space)
+            {
+
+                if (obj_PoligonoTemp != null && estaDesenhandoPoligono)//xxxxxxxxxxxxxxxxxxxxxxxxx
+                {
+                    obj_PoligonoTemp.addPonto(new Ponto4D(mouseX, mouseY));
+                }
+                else//se nao tem poligonoTemp selecionado, entao esta criando um novo
+                    criaPoligono();
+
+            }
+            else if (e.Key == Key.A)
+            {
+
+                //TODO: implementar
+
+                //quando muda a selecao, resseta os parametros                
+                zeraRotacoes();
+
+
+            }
+
+            // Console.WriteLine(" [  M     ]         : exibe matriz de transformação do polígono selecionado. ");
+            else if (e.Key == Key.M)
+            {
+                if (objetoSelecionado != null)
+                    Console.WriteLine(objetoSelecionado.Transformacao4D.ToString());
+            }
+
+            // Console.WriteLine(" [  P     ]         : exibe os vértices do polígono selecionado. ");
+            else if (e.Key == Key.P)//mostra as coordenadas do poligono selecionado
+            {
+                if (objetoSelecionado is Poligono)
+                {
+                    Console.WriteLine(objetoSelecionado.ToString());
+                }
+
+            }
+
+            // Console.WriteLine(" [  I     ]         : aplica a matriz Identidade no polígono selecionado. ");
+            else if (e.Key == Key.I)
+            {
+                //matriz identidade volta "tudo pro lugar",entao tmb zera rotacoes
+                objetoSelecionado.Transformacao4D.AtribuirIdentidade();
+                zeraRotacoes();
+
+            }
+
+            //Console.WriteLine(" [Left    ] N3-Exe10: move o polígono selecionado para eixo X positivo. "); 
+            else if (e.Key == Key.Left)
+            {
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.translacaoXNegativo();
+
+                }
+
+
+
+            }
+            // Console.WriteLine(" [Right   ] N3-Exe10: move o polígono selecionado para eixo X negativo. ");
+            else if (e.Key == Key.Right)
+            {
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.translacaoXPositivo();
+
+                }
+
+
+            }
+            // Console.WriteLine(" [Up      ] N3-Exe10: move o polígono selecionado para eixo Y positivo. ");
+            else if (e.Key == Key.Up)
+            {
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.translacaoYPositivo();
+                }
+
+
+            }
+            // Console.WriteLine(" [Down    ] N3-Exe10: move o polígono selecionado para eixo Y negativo. ");
+            else if (e.Key == Key.Down)
+            {
+
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.translacaoYNegativo();
+                }
+
+            }
+            //---------------------------------------------------------------------------------------------------
+            //Console.WriteLine(" [PageUp  ]         : reduz o polígono selecionado em relação a origem. ");
+            else if (e.Key == Key.PageUp)
+            {
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.escalaDiminuiOrigem();
+                }
+            }
+            else if (e.Key == Key.PageDown)
+            {
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.escalaAumentarOrigem();
+                }
+            }
+            else if (e.Key == Key.Home)
+            {
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.escalaDiminuiCentroBBox();
+                    Console.WriteLine("aqio");
+
+                }
+            }
+            else if (e.Key == Key.End)
+            {
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.escalaAumentarCentroBBox();
+                }
+            }
+
+            //Console.WriteLine(" [  1     ]         : rotação anti-horária do polígono selecionado em relação a origem. ");
+            else if (e.Key == Key.Keypad1 || e.Key == Key.Number1)
+            {
+                if (objetoSelecionado != null)
+                {
+                    Console.WriteLine(objetoSelecionado.rotacionarAntiHorario());
+                }
+            }
+            //Console.WriteLine(" [  2     ]         : rotação horária do polígono selecionado em relação a origem. ");
+            else if (e.Key == Key.Keypad2 || e.Key == Key.Number2)
+            {
+                if (objetoSelecionado != null)
+                {
+                    
+                    Console.WriteLine(objetoSelecionado.rotacionarHorario());
+                }
+            }
+            else if (e.Key == Key.Keypad3 || e.Key == Key.Number3)
+            {
+                if (objetoSelecionado != null)
+                {
+                    
+                }
+            }
+            else if (e.Key == Key.Keypad4 || e.Key == Key.Number4)
+            {
+                if (objetoSelecionado != null)
+                {
+
+                }
+            }
+            //--------------------------------------------------------------------------------------------
+
             else if (e.Key == Key.R)
             {
                 if (objetoSelecionado != null)
@@ -181,17 +346,7 @@ namespace gcgcg
                     objetoSelecionado.ObjetoCor.CorB = 255;
                 }
             }
-            // Console.WriteLine(" [Espaço  ] N3-Exe06: adiciona vértice ao polígono. ");
-            // como eh ADICIONA, so vai funcionar se ja tiver um poligono sendo desenhado
-            else if (e.Key == Key.Space )
-            {
-                if (obj_PoligonoTemp != null && estaDesenhandoPoligono)
-                {
-                    obj_PoligonoTemp.addPonto( new Ponto4D(mouseX, mouseY));
-                }
-                else//se nao tem objeto selecionado, entao esta criando um novo
-                    criaPoligono();
-            }
+
             //Console.WriteLine(" [  S     ] N3-Exe07: alterna entre aberto e fechado o polígono selecionado. ");
             else if (e.Key == Key.S)
             {
@@ -204,133 +359,60 @@ namespace gcgcg
                 }
 
             }
-            //Console.WriteLine(" [  C     ] N3-Exe04: remove o polígono selecionado. ");
-            else if (e.Key == Key.C)
-            {
-                if (objetoSelecionado is Poligono)
-                {
-                    objetosLista.Remove(objetoSelecionado);                   
-                    estaDesenhandoPoligono = false;
-                    objetoSelecionado = null;
-                    obj_PoligonoTemp = null;
-                }
-
-            }
-            // Console.WriteLine(" [  P     ]         : exibe os vértices do polígono selecionado. ");
-            else if (e.Key == Key.P)//mostra as coordenadas do poligono selecionado
-            {
-                if (objetoSelecionado is Poligono )
-                {
-                    obj_PoligonoTemp = (Poligono)objetoSelecionado;
-
-                    Console.WriteLine(objetoSelecionado.ToString());
-                }
-
-            }
             //Console.WriteLine(" [  D     ] N3-Exe05: remove o vértice do polígono selecionado que estiver mais perto do mouse. ");
             else if (e.Key == Key.D)
             {
-                if(objetoSelecionado != null){
-                    obj_PoligonoTemp = (Poligono)objetoSelecionado;
-                   
-                   //encontra o vertice mais proximo e remove
-                    obj_PoligonoTemp.removePonto(obj_PoligonoTemp.getVerticeMaisProximo(mouseX,mouseY));
+                if (objetoSelecionado != null)
+                {
+                    if (!alterandoVertice)
+                    {
+
+                        //encontra o vertice mais proximo e remove
+                        objetoSelecionado.PontoRemover(objetoSelecionado.getVerticeMaisProximo(mouseX, mouseY));
+                    }
+                    else
+                    {
+                        alterandoVertice = false;
+                        objetoSelecionado.PontoRemover(obj_Ponto.getPonto());
+                    }
                 }
             }
             //    Console.WriteLine(" [  V     ] N3-Exe05: move o vértice do polígono selecionado que estiver mais perto do mouse. ");
             else if (e.Key == Key.V)
             {
-                
-                if(objetoSelecionado != null){
-                    obj_PoligonoTemp = (Poligono)objetoSelecionado;
-                   
-                   //encontra o vertice mais proximo e remove
-                    
-                    alterandoVertice= true;
+
+                if (objetoSelecionado != null && alterandoVertice == false)
+                {
+                    alterandoVertice = true;
+
+                    //encontra o vertice mais proximo                  
                     //TODO: FUNCIONA?
-                    obj_Ponto.setPonto(obj_PoligonoTemp.getVerticeMaisProximo(mouseX,mouseY));
+                    obj_Ponto.setPonto(objetoSelecionado.getVerticeMaisProximo(mouseX, mouseY));
                 }
             }
+            //Console.WriteLine(" [  C     ] N3-Exe04: remove o polígono selecionado. ");
+            else if (e.Key == Key.C)
+            {
+                if (objetoSelecionado is Poligono)
+                {
+                    objetosLista.Remove(objetoSelecionado);
+                    estaDesenhandoPoligono = false;
+                    objetoSelecionado = null;
+                    obj_PoligonoTemp = null;
+                    alterandoVertice = false;
+                }
 
-            //TODO: remover, adicionado para testes
-             else if (e.Key == Key.K)
+            }
+
+
+
+            //TODO: remover, adicionado para testes xxxxxx
+            else if (e.Key == Key.K)
             {
                 objetoSelecionado = (Poligono)objetosLista[1];
             }
-            // Console.WriteLine(" [  M     ]         : exibe matriz de transformação do polígono selecionado. ");
-             else if (e.Key == Key.M)
-            {
-                  Console.WriteLine(objetoSelecionado.Transformacao4D.ToString());
-            }
 
 
-            else if (e.Key == Key.Enter)
-            {
-                //verifica se ainda estava desenhando com ponto auxiliar
-                //se sim, remove o ponto auxiliar
-                if (estaDesenhandoPoligono && obj_PoligonoTemp !=null)
-                {
-                   
-                    //remove pontos auxiliares do desenho, o primeiro(para mostrar a linha) e o ultimo do rastro
-                    obj_PoligonoTemp.finalizaDesenhoPoligono();
-                   
-                    
-                    //deseleciona poligono
-                    objetoSelecionado = null;
-                    obj_PoligonoTemp = null;
-                    estaDesenhandoPoligono = false;
-
-                }
-                else if(alterandoVertice)
-                {
-                    alterandoVertice = !alterandoVertice;
-
-                }
-            }
-            //      Console.WriteLine(" [  X     ]         : rotação entorno do eixo X. ");
-            else if (e.Key == Key.X)
-            {
-                if(objetoSelecionado!=null){
-                    rotacaoX+=0.2;
-                    objetoSelecionado.Transformacao4D.AtribuirRotacaoX(rotacaoX);
-
-                }
-            }
-            //Console.WriteLine(" [  Y     ]         : rotação entorno do eixo Y. ");     
-            else if (e.Key == Key.Y)
-            {
-                if(objetoSelecionado!=null){
-                    rotacaoY+= 0.2;
-                    objetoSelecionado.Transformacao4D.AtribuirRotacaoY(rotacaoY);
-                    obj_PoligonoTemp = (Poligono)objetoSelecionado;
-                    obj_PoligonoTemp.AtualizaBBox();
-
-                }
-            }
-            // Console.WriteLine(" [  Z     ]         : rotação entorno do eixo Z. ");
-            else if (e.Key == Key.Z)
-            {
-                if(objetoSelecionado!=null){
-                    rotacaoZ+=0.2;
-
-                    objetoSelecionado.Transformacao4D.AtribuirRotacaoZ(rotacaoZ);
-
-                }
-            }
-            else if (e.Key == Key.A)
-            {
-                //quando muda a selecao, resseta os parametros
-                
-               zeraRotacoes();
-            }
-            // Console.WriteLine(" [  I     ]         : aplica a matriz Identidade no polígono selecionado. ");
-            else if (e.Key == Key.I)
-            {
-                //matriz identidade volta "tudo pro lugar",entao tmb zera rotacoes
-                objetoSelecionado.Transformacao4D.AtribuirIdentidade();
-                zeraRotacoes();
-               
-            }
             else
                 Console.WriteLine(" __ Tecla não implementada.");
         }
@@ -340,100 +422,117 @@ namespace gcgcg
         {
             mouseX = e.Position.X; mouseY = 600 - e.Position.Y;
 
-            if (estaDesenhandoPoligono && obj_PoligonoTemp != null)
+            if (obj_PoligonoTemp != null)
             {
-                          
+
                 if (mouseMoverPto)
                 {
-                     
+
                     obj_PoligonoTemp.getPontoFinal().X = mouseX;
-                    obj_PoligonoTemp.getPontoFinal().Y = mouseY;                    
+                    obj_PoligonoTemp.getPontoFinal().Y = mouseY;
 
                 }
             }//se nao esta desenhando, esta ajustando um vertice especifico
             if (alterandoVertice)
             {
                 obj_Ponto.setPonto(mouseX, mouseY);
-                obj_PoligonoTemp.AtualizaBBox();
-                     
+                objetoSelecionado.AtualizaBBox();
+
 
             }
         }
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
 
-            if (e.Button == MouseButton.Left && estaDesenhandoPoligono)//continua desenho do poligono
+            if (e.Button == MouseButton.Left && obj_PoligonoTemp != null)//continua desenho do poligono
             {
 
-                //ajuste copiado do N2
-               // mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
-
-                
                 //adiciona novo ponto ao poligono que ja esta sendo desenhado
                 obj_PoligonoTemp.addPonto(new Ponto4D(mouseX, mouseY));
 
             }
-            else if (e.Button == MouseButton.Left && !estaDesenhandoPoligono)
-            {//se clicou e nao esta desenhando, é um novo poligono
-
-                //cria o novo poligon e seta que agora comecou o novo desenho
-                // obj_PoligonoTemp = new Poligono(Utilitario.charProximo(objetoId), null);
-                // estaDesenhandoPoligono = true;
-
-                // //ajuste copiado do N2
-                // mouseX = e.Position.X; mouseY = 750 - e.Position.Y;
-
-                // //cria objeto Ponto para fazer parte do Poligono
-                // objetoId = Utilitario.charProximo(objetoId);
-                // obj_Ponto = new Ponto(objetoId, null, new Ponto4D(mouseX, mouseY, 0));
-                // obj_PoligonoTemp.addPonto(obj_Ponto);
-                // objetoSelecionado = obj_PoligonoTemp;
-                // objetosLista.Add(obj_PoligonoTemp);
+            //se clicou e nao esta desenhando, é um novo poligono
+            else if (e.Button == MouseButton.Left && obj_PoligonoTemp == null)
+            {
 
                 criaPoligono();
 
             }
             if (e.Button == MouseButton.Right)
             {
-                estaDesenhandoPoligono = false;
-                obj_PoligonoTemp.finalizaDesenhoPoligono();
-                obj_PoligonoTemp = null;
-                objetoSelecionado=null;
-                alterandoVertice = false;
-
+                finalizaDesenhoPoligono();
 
             }
-            //base.OnMouseDown(e);
+
         }
         public void criaPoligono()
         {
-             //cria o novo poligon e seta que agora comecou o novo desenho
-            obj_PoligonoTemp = new Poligono(Utilitario.charProximo(objetoId), null);
-            estaDesenhandoPoligono = true;
-            if(objetoSelecionado!=null)
+            //se comecou a alterar o vertice, tem que terminar antes fazer outras coisas
+            if (!alterandoVertice)
             {
-                objetoSelecionado.FilhoAdicionar(obj_PoligonoTemp);
+                //cria o novo poligon e seta que agora comecou o novo desenho
+                obj_PoligonoTemp = new Poligono(Utilitario.charProximo(objetoId), null);
+                estaDesenhandoPoligono = true;
+
+                //cria objeto Ponto para fazer parte do Poligono          
+                obj_PoligonoTemp.addPonto(new Ponto4D(mouseX, mouseY));
+
+
+                //se tem um objeto selecionado, é filho dele
+                if (objetoSelecionado != null)
+                {
+                    objetoSelecionado.FilhoAdicionar(obj_PoligonoTemp);
+
+                }
+                else //se nao é um novo objeto e seleciona ele
+                {
+
+                    objetoSelecionado = obj_PoligonoTemp;
+                    objetosLista.Add(objetoSelecionado);
+                }
             }
-           
-            
-            objetoSelecionado = obj_PoligonoTemp;            
-            
 
-          
 
-            //cria objeto Ponto para fazer parte do Poligono
-          
-            obj_PoligonoTemp.addPonto(new Ponto4D(mouseX, mouseY));
-            
-            //TODO: adiciona esse novo poligono na lista? ou só quando encerrar desenho?
-            objetosLista.Add(obj_PoligonoTemp);
         }
-        public void zeraRotacoes(){
+        public void finalizaDesenhoPoligono()
+        {
+            if (alterandoVertice)
+            {
+                alterandoVertice = false;
+            }
+            else if (obj_PoligonoTemp != null)
+            {
+                //remove ponto auxiliar de rastro do desenho
+                obj_PoligonoTemp.finalizaDesenhoPoligono();
+
+                //com a finalização do desenho, seleciona o poligono
+                objetoSelecionado = obj_PoligonoTemp;
+
+                //tira selecao do obj_PoligoTemp - flag de desenho em andamento
+                obj_PoligonoTemp = null;
+
+
+                estaDesenhandoPoligono = false;//xxxx remover
+
+
+
+            }
+
+
+
+
+
+
+
+
+        }
+        public void zeraRotacoes()
+        {
             rotacaoX = 0;
             rotacaoY = 0;
             rotacaoZ = 0;
         }
-     
+
 #if CG_Gizmo
         private void Sru3D()
         {
