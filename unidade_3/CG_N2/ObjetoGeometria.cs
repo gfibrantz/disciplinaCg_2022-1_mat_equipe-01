@@ -59,20 +59,7 @@ namespace gcgcg
         {
             return pontosLista[pontosLista.Count - 1];
         }
-        public void escalaDiminuiCentroBBox()
-        {
-             Ponto4D centro = base.BBox.obterCentro;
-
-            
-            //leva para origem
-            Transformacao4D.AtribuirTranslacao(-centro.X, -centro.Y, -centro.Z);
-
-            //faz a transformação
-           // tTransformacao.AtribuirEscala(0.5, 0.5,0.5);
-            
-           // tTransformacao.AtribuirTranslacao(centro.X, centro.Y, centro.Z);
-                
-        }
+    
 
         public void PontosAlterar(Ponto4D pto, int posicao)
         {
@@ -101,6 +88,15 @@ namespace gcgcg
             }
 
             return maisProximo;
+
+        }
+          public bool getClicouDentro(double xClick, double yClick){
+           
+            if(base.PrimitivaTipo == OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop){
+                return Matematica.ScanLineTop(pontosLista, xClick, yClick,true);
+            }
+
+             return Matematica.ScanLineTop(pontosLista, xClick, yClick,false);          
 
         }
 

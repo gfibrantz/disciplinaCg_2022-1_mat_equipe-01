@@ -177,9 +177,52 @@ namespace gcgcg
 
                 //TODO: implementar
 
+                objetoSelecionado = null;
+                Ponto4D ptoClique = new Ponto4D(mouseX, mouseY);
+
+                //vamos ao que interessa
+                //temos que percorrer os objetos e com aquele que o clique esta dentro da bbox, verificar a scanline
+                foreach (Objeto obj in objetosLista)
+                {
+                    //se clicou dentor da bbox deste objeto, verifica se foi dentro ou fora dele com scanline
+                    if (obj.BBox.estaDentro(ptoClique))
+                    {
+                        ObjetoGeometria temp = (ObjetoGeometria)obj;
+
+                        //se clicou dentro seleciona
+                        if (temp.getClicouDentro(ptoClique.X, ptoClique.Y))
+                        {
+                            objetoSelecionado = temp;
+                        }
+
+                    }
+                    else if (objetoSelecionado == null && obj.getQtdFilhos() > 0) //se nao encontrou no pai, entao procura nos filhos
+                    {
+
+                        for (int i = 0; i < obj.getQtdFilhos(); i++)
+                        {
+                            //se esta dentro da bbox do filho
+                            if (obj.getFilhoAt(i).BBox.estaDentro(ptoClique))
+                            {
+                                ObjetoGeometria temp = (ObjetoGeometria)obj.getFilhoAt(i);
+
+                                //se clicou dentro seleciona
+                                if (temp.getClicouDentro(ptoClique.X, ptoClique.Y))
+                                {
+                                    objetoSelecionado = temp;
+                                }
+                            }
+
+
+                        }
+
+
+
+                    }
+                }
+
                 //quando muda a selecao, resseta os parametros                
                 zeraRotacoes();
-
 
             }
 
@@ -214,7 +257,7 @@ namespace gcgcg
             {
                 if (objetoSelecionado != null)
                 {
-                    objetoSelecionado.translacaoXNegativo();
+                    objetoSelecionado.translacaoX(false);
 
                 }
 
@@ -226,7 +269,7 @@ namespace gcgcg
             {
                 if (objetoSelecionado != null)
                 {
-                    objetoSelecionado.translacaoXPositivo();
+                    objetoSelecionado.translacaoX(true);
 
                 }
 
@@ -237,7 +280,7 @@ namespace gcgcg
             {
                 if (objetoSelecionado != null)
                 {
-                    objetoSelecionado.translacaoYPositivo();
+                    objetoSelecionado.translacaoY(true);
                 }
 
 
@@ -248,7 +291,7 @@ namespace gcgcg
 
                 if (objetoSelecionado != null)
                 {
-                    objetoSelecionado.translacaoYNegativo();
+                    objetoSelecionado.translacaoY(false);
                 }
 
             }
@@ -258,14 +301,14 @@ namespace gcgcg
             {
                 if (objetoSelecionado != null)
                 {
-                    objetoSelecionado.escalaDiminuiOrigem();
+                    objetoSelecionado.escalaOrigem(false);
                 }
             }
             else if (e.Key == Key.PageDown)
             {
                 if (objetoSelecionado != null)
                 {
-                    objetoSelecionado.escalaAumentarOrigem();
+                    objetoSelecionado.escalaOrigem(true);
                 }
             }
             else if (e.Key == Key.Home)
@@ -273,7 +316,7 @@ namespace gcgcg
                 if (objetoSelecionado != null)
                 {
                     objetoSelecionado.escalaDiminuiCentroBBox();
-                    Console.WriteLine("aqio");
+
 
                 }
             }
@@ -290,7 +333,7 @@ namespace gcgcg
             {
                 if (objetoSelecionado != null)
                 {
-                    Console.WriteLine(objetoSelecionado.rotacionarAntiHorario());
+                    objetoSelecionado.rotacionarOrigem(false);
                 }
             }
             //Console.WriteLine(" [  2     ]         : rotação horária do polígono selecionado em relação a origem. ");
@@ -298,22 +341,24 @@ namespace gcgcg
             {
                 if (objetoSelecionado != null)
                 {
-                    
-                    Console.WriteLine(objetoSelecionado.rotacionarHorario());
+
+                    objetoSelecionado.rotacionarHorario();
                 }
             }
+            // Console.WriteLine(" [  3     ] N3-Exe12: rotação anti-horária do polígono selecionado em relação ao centro da bBox. ");
             else if (e.Key == Key.Keypad3 || e.Key == Key.Number3)
             {
                 if (objetoSelecionado != null)
                 {
-                    
+                    objetoSelecionado.rotacaoAntiHorariaBBox();
                 }
             }
+            //     Console.WriteLine(" [  4     ] N3-Exe12: rotação horária do polígono selecionado em relação ao centro da bBox. ");
             else if (e.Key == Key.Keypad4 || e.Key == Key.Number4)
             {
                 if (objetoSelecionado != null)
                 {
-
+                    objetoSelecionado.rotacaoHorariaBBox();
                 }
             }
             //--------------------------------------------------------------------------------------------
@@ -409,7 +454,7 @@ namespace gcgcg
             //TODO: remover, adicionado para testes xxxxxx
             else if (e.Key == Key.K)
             {
-                objetoSelecionado = (Poligono)objetosLista[1];
+                objetoSelecionado = null;
             }
 
 

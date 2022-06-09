@@ -26,9 +26,10 @@ namespace gcgcg
         private Transformacao4D tTransformacao = new Transformacao4D();
         public Transformacao4D Transformacao4D { get => tTransformacao; set => tTransformacao = value; }
         private List<Objeto> objetosLista = new List<Objeto>();
-        double radiansX =0;
-        double radiansY =0;
+        double radiansX = 0;
+        double radiansY = 0;
         double radiansZ = 0;
+
 
         //testes
         private Transformacao4D matrizTemp = new Transformacao4D();
@@ -37,94 +38,186 @@ namespace gcgcg
         public Objeto(char rotulo, Objeto paiRef)
         {
             this.rotulo = rotulo;
-            
+
 
         }
-        private void levarParaOrigem(bool naOrigem)
+        public Objeto getFilhoAt(int index){
+            return objetosLista[index];
+        }
+        public int getQtdFilhos(){
+            return objetosLista.Count;
+        }
+      
+        public double rotacionarHorario()
         {
-            Ponto4D centro = bBox.obterCentro;
-
             //copio a situacao atual
             Transformacao4D agora = new Transformacao4D();
             agora.AtribuirDados(tTransformacao.ObterDados());
+            if (radiansZ < 0)
+                radiansZ = 0;
 
-            //levo para origem
-            tTransformacao.AtribuirIdentidade();
-            tTransformacao.AtribuirTranslacao(-centro.X, -centro.Y, -centro.Z);
+            this.radiansZ += 0.01;
 
-
-        }
-
-        public double rotacionarHorario(){
-             //copio a situacao atual
-            Transformacao4D agora = new Transformacao4D();
-            agora.AtribuirDados(tTransformacao.ObterDados());
-            if(radiansZ < 0)
-                radiansZ= 0;
-
-            this.radiansZ+=0.01;
-            
             tTransformacao.AtribuirRotacaoZ(radiansZ);
             tTransformacao = tTransformacao.MultiplicarMatriz(agora);
             return radiansZ;
 
 
         }
-         public double rotacionarAntiHorario(){
-             //copio a situacao atual
-            Transformacao4D agora = new Transformacao4D();
-            agora.AtribuirDados(tTransformacao.ObterDados());
-            if(radiansZ > 0)
-                radiansZ= 0;
+        public void  rotacionarOrigem(bool horario)
+        {
+
+            int grausRotacionar = -5;
+            if(horario)
+                grausRotacionar = 5;
+
+            Transformacao4D rotacaoHoraria = new Transformacao4D();
+            rotacaoHoraria.AtribuirRotacaoZ(grausRotacionar * Transformacao4D.DEG_TO_RAD);           
             
-            this.radiansZ -= 0.01;
-            tTransformacao.AtribuirRotacaoZ(radiansZ);
-            tTransformacao = tTransformacao.MultiplicarMatriz(agora);
-            return radiansZ;
-
-
-        }
-        public void translacaoXPositivo()
-        {
-            tTransformacao.AtribuirTranslacao(tTransformacao.ObterElemento(12) + 3, tTransformacao.ObterElemento(13), tTransformacao.ObterElemento(14));
-
-
-        }
-        public void translacaoXNegativo()
-        {
-            tTransformacao.AtribuirTranslacao(tTransformacao.ObterElemento(12) - 3, tTransformacao.ObterElemento(13), tTransformacao.ObterElemento(14));
-
-        }
-        public void translacaoYPositivo()
-        {
-            tTransformacao.AtribuirTranslacao(tTransformacao.ObterElemento(12) , tTransformacao.ObterElemento(13)+ 3, tTransformacao.ObterElemento(14));
-
-        }
-        public void translacaoYNegativo()
-        {
-            tTransformacao.AtribuirTranslacao(tTransformacao.ObterElemento(12), tTransformacao.ObterElemento(13) - 3, tTransformacao.ObterElemento(14));
-
-        }
-        public void escalaDiminuiOrigem()
-        {
            
-            tTransformacao.AtribuirEscala(tTransformacao.ObterElemento(0)-0.1, tTransformacao.ObterElemento(5)-0.1,tTransformacao.ObterElemento(10)-0.1);
-                
+            tTransformacao = rotacaoHoraria.MultiplicarMatriz(tTransformacao);
         }
-          public void escalaAumentarOrigem()
+
+        public void translacaoX(bool positivo)
         {
-            
-            tTransformacao.AtribuirEscala(tTransformacao.ObterElemento(0)+0.1, tTransformacao.ObterElemento(5)+0.1,tTransformacao.ObterElemento(10)+0.1);
-            
+
+            int valorX = -3;
+            if (positivo)
+                valorX = 3;
+
+            Transformacao4D translacaoX = new Transformacao4D();
+            translacaoX.AtribuirTranslacao(valorX, 0, 0);
+
+            tTransformacao = translacaoX.MultiplicarMatriz(tTransformacao);
+
+        }
+        public void translacaoY(bool positivo)
+        {
+
+            int valorY = -3;
+            if (positivo)
+                valorY = 3;
+
+            Transformacao4D translacaoY = new Transformacao4D();
+            translacaoY.AtribuirTranslacao(0, valorY, 0);
+
+            tTransformacao = translacaoY.MultiplicarMatriz(tTransformacao);
 
         }
 
-          public void escalaAumentarCentroBBox()
+        public void escalaOrigem(bool aumenta)
         {
-            Ponto4D centro = bBox.obterCentro;
-            tTransformacao.AtribuirEscala(tTransformacao.ObterElemento(0)+0.1, tTransformacao.ObterElemento(5)+0.1,tTransformacao.ObterElemento(10)+0.1);
-            tTransformacao.AtribuirTranslacao(centro.X , centro.Y, centro.Z );
-            
+            //define valor a ser aplicado
+            double valorEscala = 0.9;
+            if (aumenta)
+                valorEscala = 1.1;
+
+            //cria matriz para aplicar na do poligono
+            Transformacao4D escala = new Transformacao4D();
+            escala.AtribuirEscala(valorEscala, valorEscala, valorEscala);
+
+            //agora aplica no poligono
+            tTransformacao = escala.MultiplicarMatriz(tTransformacao);
+
+        }
+      
+
+        public void escalaAumentarCentroBBox()
+        {
+            Ponto4D centro = BBox.obterCentro;
+            //copia dados atuais
+            Transformacao4D translacaoPraOrigem = new Transformacao4D();
+            translacaoPraOrigem.AtribuirTranslacao(-centro.X, -centro.Y, -centro.Z);
+            //leva para origem
+            tTransformacao = translacaoPraOrigem.MultiplicarMatriz(tTransformacao);
+
+            //faz a transformação
+            Transformacao4D escalaReduzMetade = new Transformacao4D();
+            escalaReduzMetade.AtribuirEscala(1.5, 1.5, 1.5);
+            //aplica na matriz do poligono
+            tTransformacao = escalaReduzMetade.MultiplicarMatriz(tTransformacao);
+
+
+            //volta pra posicao inicial 
+            Transformacao4D translacaoDeVolta = new Transformacao4D();
+            translacaoDeVolta.AtribuirTranslacao(centro.X, centro.Y, centro.Z);
+            //aplica na matriz do poligono          
+            tTransformacao = translacaoDeVolta.MultiplicarMatriz(tTransformacao);
+
+        }
+
+        public void escalaDiminuiCentroBBox()
+        {
+            Ponto4D centro = BBox.obterCentro;
+            //copia dados atuais
+            Transformacao4D translacaoPraOrigem = new Transformacao4D();
+            translacaoPraOrigem.AtribuirTranslacao(-centro.X, -centro.Y, -centro.Z);
+            //leva para origem
+            tTransformacao = translacaoPraOrigem.MultiplicarMatriz(tTransformacao);
+
+            //faz a transformação
+            Transformacao4D escalaReduzMetade = new Transformacao4D();
+            escalaReduzMetade.AtribuirEscala(0.5, 0.5, 0.5);
+            //aplica na matriz do poligono
+            tTransformacao = escalaReduzMetade.MultiplicarMatriz(tTransformacao);
+
+
+            //volta pra posicao inicial 
+            Transformacao4D translacaoDeVolta = new Transformacao4D();
+            translacaoDeVolta.AtribuirTranslacao(centro.X, centro.Y, centro.Z);
+            //aplica na matriz do poligono          
+            tTransformacao = translacaoDeVolta.MultiplicarMatriz(tTransformacao);
+
+
+        }
+
+
+        public void rotacaoHorariaBBox()
+        {
+            Ponto4D centro = BBox.obterCentro;
+            //copia dados atuais
+            Transformacao4D translacaoPraOrigem = new Transformacao4D();
+            translacaoPraOrigem.AtribuirTranslacao(-centro.X, -centro.Y, -centro.Z);
+            //leva para origem
+            tTransformacao = translacaoPraOrigem.MultiplicarMatriz(tTransformacao);
+
+            //faz a rotacao
+            Transformacao4D rotacaoHoraria = new Transformacao4D();
+            rotacaoHoraria.AtribuirRotacaoZ(5 * Transformacao4D.DEG_TO_RAD);
+            //aplica na matriz do poligono
+            tTransformacao = rotacaoHoraria.MultiplicarMatriz(tTransformacao);
+
+
+            //volta pra posicao inicial 
+            Transformacao4D translacaoDeVolta = new Transformacao4D();
+            translacaoDeVolta.AtribuirTranslacao(centro.X, centro.Y, centro.Z);
+            //aplica na matriz do poligono          
+            tTransformacao = translacaoDeVolta.MultiplicarMatriz(tTransformacao);
+
+
+        }
+        public void rotacaoAntiHorariaBBox()
+        {
+            Ponto4D centro = BBox.obterCentro;
+            //copia dados atuais
+            Transformacao4D translacaoPraOrigem = new Transformacao4D();
+            translacaoPraOrigem.AtribuirTranslacao(-centro.X, -centro.Y, -centro.Z);
+            //leva para origem
+            tTransformacao = translacaoPraOrigem.MultiplicarMatriz(tTransformacao);
+
+            //faz a rotacao
+            Transformacao4D rotacaoHoraria = new Transformacao4D();
+            rotacaoHoraria.AtribuirRotacaoZ(-5 * Transformacao4D.DEG_TO_RAD);
+            //aplica na matriz do poligono
+            tTransformacao = rotacaoHoraria.MultiplicarMatriz(tTransformacao);
+
+
+            //volta pra posicao inicial 
+            Transformacao4D translacaoDeVolta = new Transformacao4D();
+            translacaoDeVolta.AtribuirTranslacao(centro.X, centro.Y, centro.Z);
+            //aplica na matriz do poligono          
+            tTransformacao = translacaoDeVolta.MultiplicarMatriz(tTransformacao);
+
 
         }
         public void Desenhar()

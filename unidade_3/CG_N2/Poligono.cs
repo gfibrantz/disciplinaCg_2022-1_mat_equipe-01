@@ -27,15 +27,7 @@ namespace gcgcg
             
             return base.PontosUltimo();
         }
-        public bool getClicouDentro(double xClick, double yClick){
-           
-            if(base.PrimitivaTipo == PrimitiveType.LineLoop){
-                return Matematica.ScanLineTop(base.pontosLista, xClick, yClick,true);
-            }
-
-             return Matematica.ScanLineTop(base.pontosLista, xClick, yClick,false);          
-
-        }
+      
         
         private void removePontoFinal()
         {

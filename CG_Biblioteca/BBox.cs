@@ -30,6 +30,21 @@ namespace CG_Biblioteca
       Atualizar(pto.X, pto.Y, pto.Z);
     }
 
+    public bool estaDentro(Ponto4D pto)
+    {
+      if(pto.X > maiorX || pto.X < menorX)
+        return false;
+      
+      if(pto.Y > maiorY || pto.Y < menorY)
+        return false;
+     
+      if(pto.Z > maiorZ || pto.Z < menorZ)
+        return false;
+
+      return true;
+    }
+
+
     public void Atualizar(double x, double y, double z)
     {
       if (x < menorX)
