@@ -1,0 +1,16 @@
+@startuml Poligono
+class Poligono {
+    estaSendoDesenhado: bool
+    + Poligono(rotulo:string, paiRef:Objeto)
+    + getPontoFinal() : Ponto4D
+    + removePontoFinal() : void
+    + removePonto(pto: Ponto4D) : void
+    + estaNoLimiteBBox(x: double,y:double) : bool
+    + addPonto(novo:Ponto4D) : void
+    + finalizaDesenhoPoligono() : void
+    + imprimePontos() : string
+    # <<override>>  DesenharObjeto(): void
+    + <<override>> ToString() : string
+}
+ObjetoGeometria <|-- Poligono
+@enduml

@@ -1,12 +1,36 @@
 @startuml Objeto
 abstract class Objeto {
+    # rotulo: char
+    + objetoCor: Cor <<get>> <<set>>
+    + PrimitivaTipo: PrimitiveType <<get>> <<set>>
     + PrimitivaTamanho : float <<get>> <<set>>
+    + BBox : BBox <<get>> <<set>>
+    + Transformacao4D : Transformacao4D <<get>> <<set>>
+    - objetosLista : List<Objeto>
+    radiansX : double
+    radiansY: double
+    radiansZ: double
     + Objeto(rotulo:string, paiRef:Objeto)
     + Desenhar() : void
     + FilhoAdicionar(filho:Objeto) : void
     + FilhoRemover(filho:Objeto) : void
+    + getFilhoAt(index:int) : Objeto
+    + getQtdFilhos() : int
+    + rotacionarHorario() : double
+    + rotacionarOrigem(horario:bool) : void
+    + translacaoX(positivo:bool) : void
+    + translacaoY(positivo:bool) : void
+    + escalaOrigem(aumenta:bool) : void
+    + escalaAumentarCentroBBox(): void
+    + escalaDiminuiCentroBBox(): void
+    + rotacaoHorariaBBox(): void
+    + rotacaoAntiHorariaBBox(): void
+    # {abstract} DesenharGeometria(): void
+    + FilhoAdicionar(filho:Objeto): void
+    + FilhoRemover(filho:Objeto): void
 }
 Objeto --> "ObjetoCor" Cor
 Objeto --> "PrimitivaTipo" PrimitiveType
 Objeto --> "BBox" BBox
+Objeto --> "tTransformacao" Transformacao4D
 @enduml
