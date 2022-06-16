@@ -3,9 +3,33 @@ class Mundo {
     + {static} GetInstance(width:int, height:int) : Mundo
     mouseX : int
     mouseY : int
+    - objetoId: char
+    - bBoxDesenhar: bool
+    # objetosLista: List<Objeto>
+    - mouseMoverPto: bool
+    - alterandoVertice: bool
+    estaDesenhandoPoligono: bool
+    - rotacaoX : double
+    - rotacaoY : double
+    - rotacaoZ : double
+    # <<override>> OnLoad(e:EventArgs) : void
+    # <<override>> OnUpdateFrame(e:FrameEventArgs) : void
+    # <<override>> OnRenderFrame(e:FrameEventArgs) : void
+    # <<override>> OnKeyDown(e:OpenTK.Input.KeyboardKeyEventArgs) : void
+    # <<override>> OnMouseMove(e:MouseEventArgs) : void
+    # <<override>> OnMouseDown(e:MouseEventArgs) : void
+    + criaPoligono(): void
+    + finalizaDesenhoPoligono(): void
+    + zeraRotacoes(): void
+    - Sru3D(): void
 }
 class Program {
     {static} Main(args:string[]) : void
 }
 GameWindow <|-- Mundo
+Mundo --> "camera" CameraOrtho
+Mundo --> "objetoSelecionado" ObjetoSelecionado
+Mundo --> "obj_retangulo" Retangulo
+Mundo --> "obj_PoligonoTemp" Poligono
+Mundo --> "obj_Ponto" Ponto
 @enduml
