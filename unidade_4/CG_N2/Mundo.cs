@@ -38,7 +38,8 @@ namespace gcgcg
             return instanciaMundo;
         }
 
-        private CameraOrtho camera = new CameraOrtho();
+
+        private CameraPerspective cameraPerps = new CameraPerspective();
         protected List<Objeto> objetosLista = new List<Objeto>();
         private ObjetoGeometria objetoSelecionado = null;
         private char objetoId = '@';
@@ -47,6 +48,7 @@ namespace gcgcg
         private bool mouseMoverPto = true;
         private bool alterandoVertice = false;
         private Retangulo obj_Retangulo;
+        private Chao obj_Chao;//espaco grafico 
         private Poligono obj_PoligonoTemp;
         private Ponto obj_Ponto;
         bool estaDesenhandoPoligono = false;
@@ -62,17 +64,33 @@ namespace gcgcg
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            camera.xmin = 0; camera.xmax = 600; camera.ymin = 0; camera.ymax = 600;
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+            //setando a perspectiva
+
+
+            cameraPerps.Near = 0.1f;
+            cameraPerps.Far = 500.0f;
+            cameraPerps.At = new Vector3(8, 0, 0);
+            cameraPerps.Eye = new Vector3(8, 50, 80);
+
+
+            // cameraPerps.Up = new Vector3(0, 1, 0);
 
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
-            objetoId = Utilitario.charProximo(objetoId);
-            obj_Retangulo = new Retangulo(objetoId, null, new Ponto4D(50, 50, 0), new Ponto4D(150, 150, 0));
-            obj_Retangulo.ObjetoCor.CorR = 255; obj_Retangulo.ObjetoCor.CorG = 0; obj_Retangulo.ObjetoCor.CorB = 255;
-            objetosLista.Add(obj_Retangulo);
+            // objetoId = Utilitario.charProximo(objetoId);
+            // obj_Retangulo = new Retangulo(objetoId, null, new Ponto4D(50, 50, 0), new Ponto4D(150, 150, 0));
+            // obj_Retangulo.ObjetoCor.CorR = 255; obj_Retangulo.ObjetoCor.CorG = 0; obj_Retangulo.ObjetoCor.CorB = 255;
+            // objetosLista.Add(obj_Retangulo);
 
-            obj_Ponto = new Ponto('@', null, new Ponto4D(0, 0));
+            objetoId = Utilitario.charProximo(objetoId);
+            obj_Chao = new Chao(objetoId, null);
+            obj_Chao.ObjetoCor.CorR = 255; obj_Chao.ObjetoCor.CorG = 0; obj_Chao.ObjetoCor.CorB = 255;
+            objetosLista.Add(obj_Chao);
+
+            // obj_Ponto = new Ponto('@', null, new Ponto4D(0, 0));
 
 
             //comecamos ja com um objeto Poligono criado
@@ -104,22 +122,36 @@ namespace gcgcg
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 #endif
         }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            cameraPerps.Fovy = (float)Math.PI / 4;
+            cameraPerps.Aspect = Width / (float)Height;
+
+            GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(cameraPerps.Fovy, cameraPerps.Aspect, cameraPerps.Near, cameraPerps.Far);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadMatrix(ref projection);
+        }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
 #if CG_OpenGL
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            GL.Ortho(camera.xmin, camera.xmax, camera.ymin, camera.ymax, camera.zmin, camera.zmax);
+
+
 #endif
         }
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
 #if CG_OpenGL
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            Matrix4 modelview = Matrix4.LookAt(cameraPerps.Eye, cameraPerps.At, cameraPerps.Up);
             GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
+            GL.LoadMatrix(ref modelview);
+
+
 #endif
 #if CG_Gizmo
             Sru3D();
@@ -158,7 +190,6 @@ namespace gcgcg
             else if (e.Key == Key.Enter)
             {
                 finalizaDesenhoPoligono();
-
             }
             // Console.WriteLine(" [Espaço  ] N3-Exe06: adiciona vértice ao polígono. ");
             else if (e.Key == Key.Space)
@@ -586,13 +617,13 @@ namespace gcgcg
             GL.Begin(PrimitiveType.Lines);
             // GL.Color3(1.0f,0.0f,0.0f);
             GL.Color3(Convert.ToByte(255), Convert.ToByte(0), Convert.ToByte(0));
-            GL.Vertex3(0, 0, 0); GL.Vertex3(200, 0, 0);
+            GL.Vertex3(0, 0, 0); GL.Vertex3(20, 0, 0);
             // GL.Color3(0.0f,1.0f,0.0f);
             GL.Color3(Convert.ToByte(0), Convert.ToByte(255), Convert.ToByte(0));
-            GL.Vertex3(0, 0, 0); GL.Vertex3(0, 200, 0);
+            GL.Vertex3(0, 0, 0); GL.Vertex3(0, 20, 0);
             // GL.Color3(0.0f,0.0f,1.0f);
             GL.Color3(Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(255));
-            GL.Vertex3(0, 0, 0); GL.Vertex3(0, 0, 200);
+            GL.Vertex3(0, 0, 0); GL.Vertex3(0, 0, 20);
             GL.End();
 #endif
         }
