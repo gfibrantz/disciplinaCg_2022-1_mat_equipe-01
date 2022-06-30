@@ -1,11 +1,16 @@
 @startuml ObjetoGeometria
 abstract class ObjetoGeometria {
     + ObjetoGeometria(rotulo:string, paiRef:Objeto)
+    # DesenharGeometria() : void
+    # {abstract} DesenharObjeto() : void
     + PontosAdicionar(pto:Ponto4D) : void
-    + PontosRemoverUltimo() : void
+    + AtualizaBBox() : void
+    + PontosRemoverUltimo(): void
+    + PontosRemoverTodos(): void
     + PontosUltimo() : Ponto4D
     + PontosAlterar(pto:Ponto4D, posicao:int) : void
     + <<override>> ToString() : string
 }
 Objeto <|-- ObjetoGeometria
+ObjetoGeometria --> "PontosLista" Ponto4D
 @enduml

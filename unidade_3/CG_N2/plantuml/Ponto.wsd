@@ -1,0 +1,17 @@
+@startuml Ponto
+class Ponto {
+    tamanhoDoPonto : int
+    + Ponto(rotulo:string, paiRef:Objeto, pto:Ponto4D)
+    + getX() : double
+    + getY() : double
+    + getZ() : double
+    + getW() : double
+    + setTamanhoDoPonto(novoTamanho:int) : void
+    + getPonto(): Ponto4D
+    + setPonto(novo:Ponto4D): void
+    + setPonto(x:double,y:double): void
+    # <<override>> DesenharObjeto(): void
+     + <<override>> ToString() : string
+}
+ObjetoGeometria <|-- Ponto
+@enduml

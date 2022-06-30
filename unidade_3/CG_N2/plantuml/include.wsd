@@ -3,11 +3,35 @@ class Mundo {
     + {static} GetInstance(width:int, height:int) : Mundo
     mouseX : int
     mouseY : int
+    - objetoId: char
+    - bBoxDesenhar: bool
+    # objetosLista: List<Objeto>
+    - mouseMoverPto: bool
+    - alterandoVertice: bool
+    estaDesenhandoPoligono: bool
+    - rotacaoX : double
+    - rotacaoY : double
+    - rotacaoZ : double
+    # <<override>> OnLoad(e:EventArgs) : void
+    # <<override>> OnUpdateFrame(e:FrameEventArgs) : void
+    # <<override>> OnRenderFrame(e:FrameEventArgs) : void
+    # <<override>> OnKeyDown(e:OpenTK.Input.KeyboardKeyEventArgs) : void
+    # <<override>> OnMouseMove(e:MouseEventArgs) : void
+    # <<override>> OnMouseDown(e:MouseEventArgs) : void
+    + criaPoligono(): void
+    + finalizaDesenhoPoligono(): void
+    + zeraRotacoes(): void
+    - Sru3D(): void
 }
 class Program {
     {static} Main(args:string[]) : void
 }
 GameWindow <|-- Mundo
+Mundo --> "camera" CameraOrtho
+Mundo --> "objetoSelecionado" ObjetoSelecionado
+Mundo --> "obj_retangulo" Retangulo
+Mundo --> "obj_PoligonoTemp" Poligono
+Mundo --> "obj_Ponto" Ponto
 abstract class Objeto {
     + PrimitivaTamanho : float <<get>> <<set>>
     + Objeto(rotulo:string, paiRef:Objeto)
@@ -15,23 +39,41 @@ abstract class Objeto {
     + FilhoAdicionar(filho:Objeto) : void
     + FilhoRemover(filho:Objeto) : void
 }
+abstract class Objeto {
+    # rotulo: char
+    + objetoCor: Cor <<get>> <<set>>
+    + PrimitivaTipo: PrimitiveType <<get>> <<set>>
+    + PrimitivaTamanho : float <<get>> <<set>>
+    + BBox : BBox <<get>> <<set>>
+    + Transformacao4D : Transformacao4D <<get>> <<set>>
+    - objetosLista : List<Objeto>
+    radiansX : double
+    radiansY: double
+    radiansZ: double
+    + Objeto(rotulo:string, paiRef:Objeto)
+    + Desenhar() : void
+    + FilhoAdicionar(filho:Objeto) : void
+    + FilhoRemover(filho:Objeto) : void
+    + getFilhoAt(index:int) : Objeto
+    + getQtdFilhos() : int
+    + rotacionarHorario() : double
+    + rotacionarOrigem(horario:bool) : void
+    + translacaoX(positivo:bool) : void
+    + translacaoY(positivo:bool) : void
+    + escalaOrigem(aumenta:bool) : void
+    + escalaAumentarCentroBBox(): void
+    + escalaDiminuiCentroBBox(): void
+    + rotacaoHorariaBBox(): void
+    + rotacaoAntiHorariaBBox(): void
+    # {abstract} DesenharGeometria(): void
+    + FilhoAdicionar(filho:Objeto): void
+    + FilhoRemover(filho:Objeto): void
+}
 Objeto --> "ObjetoCor" Cor
 Objeto --> "PrimitivaTipo" PrimitiveType
 Objeto --> "BBox" BBox
-abstract class ObjetoGeometria {
-    + ObjetoGeometria(rotulo:string, paiRef:Objeto)
-    + PontosAdicionar(pto:Ponto4D) : void
-    + PontosRemoverUltimo() : void
-    + PontosUltimo() : Ponto4D
-    + PontosAlterar(pto:Ponto4D, posicao:int) : void
-    + <<override>> ToString() : string
-}
-Objeto <|-- ObjetoGeometria
-class Retangulo {
-    + Retangulo(rotulo:string, paiRef:Objeto, ptoInfEsq:Ponto4D, ptoSupDir:Ponto4D)
-    + <<override>> ToString() : string
-}
-ObjetoGeometria <|-- Retangulo
+Objeto --> "tTransformacao" Transformacao4D
+
 abstract class Utilitario {
     + {static} AjudaTeclado() : void
 }
@@ -42,17 +84,66 @@ class Privado_Circulo {
     + Privado_Circulo(rotulo:string, paiRef:Objeto, ptoCentro:Ponto4D, raio:double)
     + <<override>> ToString() : string
 }
-ObjetoGeometria <|-- Privado_Circulo
-abstract class Privado_Matematica {
-    + {static} DistanciaEuclidiana(pto1:Ponto4D, pto2:Ponto4D) : double
-    + {static} DistanciaEuclidianaSemRaiz(pto1:Ponto4D, pto2:Ponto4D) : double
-    + {static} ScanLineInterseccao(yi:double, y1:double, y2:double) : double
-    + {static} ScanLineCalculaXi(x1:double, x2:double, ti:double) : double
-    + {static} ScanLine(ptoClique:Ponto4D, ptoIni:Ponto4D, ptoFim:Ponto4D) : bool
+class Retangulo {
+    + Retangulo(rotulo:string, paiRef:Objeto, ptoInfEsq:Ponto4D, ptoSupDir:Ponto4D)
+    + <<override>> ToString() : string
 }
+ObjetoGeometria <|-- Retangulo
+ObjetoGeometria <|-- Privado_Circulo
 class Privado_SegReta {
     + Privado_SegReta(rotulo:string, paiRef:Objeto, ptoIni:Ponto4D, ptoFim:Ponto4D)
     + <<override>> ToString() : string
 }
 ObjetoGeometria <|-- Privado_SegReta
+class Poligono {
+    estaSendoDesenhado: bool
+    + Poligono(rotulo:string, paiRef:Objeto)
+    + getPontoFinal() : Ponto4D
+    + removePontoFinal() : void
+    + removePonto(pto: Ponto4D) : void
+    + estaNoLimiteBBox(x: double,y:double) : bool
+    + addPonto(novo:Ponto4D) : void
+    + finalizaDesenhoPoligono() : void
+    + imprimePontos() : string
+    # <<override>>  DesenharObjeto(): void
+    + <<override>> ToString() : string
+}
+ObjetoGeometria <|-- Poligono
+class Ponto {
+    tamanhoDoPonto : int
+    + Ponto(rotulo:string, paiRef:Objeto, pto:Ponto4D)
+    + getX() : double
+    + getY() : double
+    + getZ() : double
+    + getW() : double
+    + setTamanhoDoPonto(novoTamanho:int) : void
+    + getPonto(): Ponto4D
+    + setPonto(novo:Ponto4D): void
+    + setPonto(x:double,y:double): void
+    # <<override>> DesenharObjeto(): void
+     + <<override>> ToString() : string
+}
+abstract class ObjetoGeometria {
+    + ObjetoGeometria(rotulo:string, paiRef:Objeto)
+    # DesenharGeometria() : void
+    # {abstract} DesenharObjeto() : void
+    + PontosAdicionar(pto:Ponto4D) : void
+    + AtualizaBBox() : void
+    + PontosRemoverUltimo(): void
+    + PontosRemoverTodos(): void
+    + PontosUltimo() : Ponto4D
+    + PontosAlterar(pto:Ponto4D, posicao:int) : void
+    + <<override>> ToString() : string
+}
+Objeto <|-- ObjetoGeometria
+ObjetoGeometria --> "PontosLista" Ponto4D
+ObjetoGeometria <|-- Ponto
+abstract class Matematica {
+    + {static} GerarPtosCirculo(angulo:double, raio:double) : Ponto4D
+    + {static} GerarPtosCirculoSimétrico(raio:double) : double
+    + {static} DistanciaEntrePontos(x1:double, y1:double,x2:double,y2:double) : double
+    + {static} calculaTi(yClick:double,y1:double,y2:double) : double
+    + {static} calculaXi(ti:double,x1:double,x2:double) : double
+    + {static} ScanLineTop(pontosPoligono:List<Ponto4D>,xClick:double,yClick:double,ehLineLoop:bool) : bool
+}
 @enduml
