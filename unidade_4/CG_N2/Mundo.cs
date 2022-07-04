@@ -51,6 +51,7 @@ namespace gcgcg
         private Chao obj_Chao;//espaco grafico 
         private Poligono obj_PoligonoTemp;
         private Ponto obj_Ponto;
+        private Cubo obj_Cubo;
         bool estaDesenhandoPoligono = false;
         private double rotacaoX = 0;
         private double rotacaoY = 0;
@@ -71,8 +72,8 @@ namespace gcgcg
 
             cameraPerps.Near = 0.1f;
             cameraPerps.Far = 500.0f;
-            cameraPerps.At = new Vector3(8, 0, 0);
-            cameraPerps.Eye = new Vector3(8, 50, 80);
+            cameraPerps.At = new Vector3(8, 0, 10);
+            cameraPerps.Eye = new Vector3(8, 32, 11);
 
 
             // cameraPerps.Up = new Vector3(0, 1, 0);
@@ -89,6 +90,11 @@ namespace gcgcg
             obj_Chao = new Chao(objetoId, null);
             obj_Chao.ObjetoCor.CorR = 255; obj_Chao.ObjetoCor.CorG = 0; obj_Chao.ObjetoCor.CorB = 255;
             objetosLista.Add(obj_Chao);
+
+            objetoId = Utilitario.charProximo(objetoId);
+            obj_Cubo = new Cubo(objetoId, null);           
+            objetosLista.Add(obj_Cubo);
+            objetoSelecionado = obj_Cubo;
 
             // obj_Ponto = new Ponto('@', null, new Ponto4D(0, 0));
 
@@ -311,7 +317,7 @@ namespace gcgcg
             {
                 if (objetoSelecionado != null)
                 {
-                    objetoSelecionado.translacaoY(true);
+                    objetoSelecionado.translacaoZ(true);
                 }
 
 
@@ -322,8 +328,9 @@ namespace gcgcg
 
                 if (objetoSelecionado != null)
                 {
-                    objetoSelecionado.translacaoY(false);
+                    objetoSelecionado.translacaoZ(false);
                 }
+
 
             }
             //---------------------------------------------------------------------------------------------------

@@ -104,6 +104,19 @@ namespace gcgcg
             tTransformacao = translacaoY.MultiplicarMatriz(tTransformacao);
 
         }
+        public void translacaoZ(bool positivo)
+        {
+
+            int valorZ = -3;
+            if (positivo)
+                valorZ = 3;
+
+            Transformacao4D translacaoZ = new Transformacao4D();
+            translacaoZ.AtribuirTranslacao(0, 0, valorZ);
+
+            tTransformacao = translacaoZ.MultiplicarMatriz(tTransformacao);
+
+        }
 
         public void escalaOrigem(bool aumenta)
         {
