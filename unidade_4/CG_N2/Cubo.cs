@@ -9,26 +9,85 @@
 using System;
 using OpenTK.Graphics.OpenGL;
 using CG_Biblioteca;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+
+
 
 namespace gcgcg
 {
   internal class Cubo : ObjetoGeometria
   {
+
     public Cubo(char rotulo, Objeto paiRef) : base(rotulo, paiRef)
     {
         
-     
+
 
     }
+
+    static public int CarregaTextura(string caminho)
+{
+    // cria um objeto de textura
+    int id = GL.GenTexture();
+
+    // seleciona a texture
+    GL.BindTexture(TextureTarget.Texture2D, id);
+
+    // carrega uma imagem
+    Bitmap bmp = new Bitmap(caminho);
+
+    
+    BitmapData bmp_data = bmp.LockBits(
+            new Rectangle(0, 0, bmp.Width, bmp.Height),
+            System.Drawing.Imaging.ImageLockMode.ReadOnly,
+            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+    // importa a imagem para a textura
+    GL.TexImage2D(TextureTarget.Texture2D,
+                  0,
+                  PixelInternalFormat.Rgba,
+                  bmp_data.Width,
+                  bmp_data.Height,
+                  0,
+                  OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
+                  OpenTK.Graphics.OpenGL.PixelType.UnsignedByte,
+                  bmp_data.Scan0);
+
+    bmp.UnlockBits(bmp_data);
+
+    GL.TexParameter(TextureTarget.Texture2D,
+            TextureParameterName.TextureWrapS,
+            (int)TextureWrapMode.Clamp);
+    GL.TexParameter(TextureTarget.Texture2D,
+            TextureParameterName.TextureWrapT,
+            (int)TextureWrapMode.Clamp);
+
+
+    GL.TexParameter(TextureTarget.Texture2D,
+            TextureParameterName.TextureMinFilter,
+            (int)TextureMinFilter.Linear);
+    GL.TexParameter(TextureTarget.Texture2D,
+            TextureParameterName.TextureMagFilter,
+            (int)TextureMagFilter.Linear);
+
+    // retorna o id do objeto
+    return id;
+}
 
     protected override void DesenharObjeto()
     {
 
-        GL.Color3(1.0f, 1.0f, 1.0f);
+
+      GL.BindTexture(TextureTarget.Texture2D, CarregaTextura("C:/Users/gfibr/Downloads/image.png"));
+
+      GL.Color3(1.0f, 1.0f, 1.0f);
       GL.Begin(PrimitiveType.Quads);
 
+
       // Face da frente
-      GL.Normal3(0, 0, 1);
+      //GL.Normal3(0, 0, 1);
       GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-1.0f, -1.0f, 1.0f);
       GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(1.0f, -1.0f, 1.0f);
       GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(1.0f, 1.0f, 1.0f);
@@ -63,7 +122,7 @@ namespace gcgcg
       GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-1.0f, 1.0f, 1.0f);
       GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(-1.0f, 1.0f, -1.0f);
       GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(-1.0f, -1.0f, -1.0f);
-
+      
       GL.End();
   
 

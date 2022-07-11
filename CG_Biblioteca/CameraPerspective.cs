@@ -63,6 +63,11 @@ namespace CG_Biblioteca
       }
     }
 
+    public void deslocarEsquerda() {
+      eye.X -=1;
+      at.X -=1;
+    }
+
     public void MenuTecla(OpenTK.Input.Key tecla, char eixo, float deslocamento)
     {
       if (tecla == Key.P) Console.WriteLine(this);

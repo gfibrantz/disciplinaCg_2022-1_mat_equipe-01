@@ -7,17 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenTK" Version="3.0.1" />
     <PackageReference Include="OpenTK.NetCore" Version="*" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
-
-  <!-- <ItemGroup> [TODO:] para que serve isto?
-    <ProjectReference Include="..\..\CG_Biblioteca\CG_Biblioteca.csproj" />
-  </ItemGroup> -->
 
   <ItemGroup>
-     <Reference Include="CG_Biblioteca">
-       <HintPath>..\..\CG_Biblioteca\bin\Debug\net6.0\CG_Biblioteca.dll</HintPath>
-     </Reference>
+    <ProjectReference Include="..\..\CG_Biblioteca\CG_Biblioteca.csproj" />
   </ItemGroup>
+
+  <!--ItemGroup>
+    // <Reference Include="CG_Biblioteca">
+    //   <HintPath>..\..\CG_Biblioteca\bin\Debug\net6.0\CG_Biblioteca.dll</HintPath>
+    // </Reference>
+ </ItemGroup> -->
 
 </Project>

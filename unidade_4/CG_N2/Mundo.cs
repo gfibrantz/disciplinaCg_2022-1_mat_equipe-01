@@ -67,6 +67,9 @@ namespace gcgcg
             base.OnLoad(e);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
+
+            //precisa ver onde colocar
+            GL.Enable(EnableCap.Texture2D);
             //setando a perspectiva
 
 
@@ -74,7 +77,6 @@ namespace gcgcg
             cameraPerps.Far = 500.0f;
             cameraPerps.At = new Vector3(8, 0, 10);
             cameraPerps.Eye = new Vector3(8, 32, 11);
-
 
             // cameraPerps.Up = new Vector3(0, 1, 0);
 
@@ -494,6 +496,12 @@ namespace gcgcg
             {
                 objetoSelecionado = null;
             }
+
+            else if (e.Key == Key.Number0)
+            {
+                cameraPerps.deslocarEsquerda();
+            }
+
 
 
             else
